@@ -1,30 +1,54 @@
-language: php
-php:
-- 5.3
-- 5.4
-- 5.5
-- 5.6
+# Travis CI Configuration File
+
+# Use Travis CI container-based infrastructure
+# See: http://docs.travis-ci.com/user/workers/container-based-infrastructure/
 sudo: false
+
+# Tell Travis CI we're using PHP
+language: php
+
+# PHP Versions
+php:
+    - 5.6
+    - 7.1
+    - 7.2
+
+# WordPress versions
 env:
-- WP_VERSION=4.1.1 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=3.8 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=3.9 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.0 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.1 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.2 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.3 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.4 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.5 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.6 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.7 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.8 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+    - WP_VERSION=4.9 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+
 branches:
-  only:
-  - master
+    only:
+        - master
+
 before_script:
-- export SLUG=$(basename $(pwd))
-- svn co --quiet http://develop.svn.wordpress.org/tags/$WP_VERSION $WP_CORE_DIR
-- cd ..
-- mv $SLUG "$WP_CORE_DIR/src/wp-content/plugins/$SLUG"
-- cd $WP_CORE_DIR
-- mysql -e "CREATE DATABASE wordpress_tests;" -uroot
-- cp wp-tests-config-sample.php wp-tests-config.php
-- sed -i "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR/src/':" wp-tests-config.php
-- sed -i "s/youremptytestdbnamehere/wordpress_tests/" wp-tests-config.php
-- sed -i "s/yourusernamehere/travis/" wp-tests-config.php
-- sed -i "s/yourpasswordhere//" wp-tests-config.php
-- mv wp-tests-config.php "$WP_TESTS_DIR/wp-tests-config.php"
-- cd "$WP_CORE_DIR/src/wp-content/plugins/$SLUG"
+    - export SLUG=$(basename $(pwd))
+    - svn co --quiet http://develop.svn.wordpress.org/tags/$WP_VERSION $WP_CORE_DIR
+    - cd ..
+    - mv $SLUG "$WP_CORE_DIR/src/wp-content/plugins/$SLUG"
+    - cd $WP_CORE_DIR
+    - mysql -e "CREATE DATABASE wordpress_tests;" -uroot
+    - cp wp-tests-config-sample.php wp-tests-config.php
+    - sed -i "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR/src/':" wp-tests-config.php
+    - sed -i "s/youremptytestdbnamehere/wordpress_tests/" wp-tests-config.php
+    - sed -i "s/yourusernamehere/travis/" wp-tests-config.php
+    - sed -i "s/yourpasswordhere//" wp-tests-config.php
+    - mv wp-tests-config.php "$WP_TESTS_DIR/wp-tests-config.php"
+    - cd "$WP_CORE_DIR/src/wp-content/plugins/$SLUG"
+
 script: phpunit
+
 notifications:
   slack:
     secure: Iji+RK3PdJbN1/aMBEnLxJ+D1LJCd9wOe7ka+y5TtFq8EMZXy8S/m8IxS+mqSvZUOhGwfgBXL9jsyCPVkqpkNNwY/34QDC8iQQU8e10TpVuD5YUfSOo6Fa/RtQik1gYUFbrxt9OCt4CaMEcyDdVTNb5A/cIoisaqk5xmCeXSvJc=
