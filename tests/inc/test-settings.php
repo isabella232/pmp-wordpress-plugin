@@ -90,7 +90,7 @@ class TestSettings extends WP_UnitTestCase {
 		// save the PMP settings that exist at this point in the test
 		$preserve = get_option( 'pmp_settings' );
 
-		update_option( 'pmp_settings', null );
+		delete_option( 'pmp_settings' );
 		$expect = '/<a href="#" id="pmp_client_secret_reset">Change client secret<\/a>/';
 		$this->expectOutputRegex($expect);
 		pmp_client_secret_input();
