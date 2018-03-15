@@ -87,7 +87,7 @@ class TestFunctions extends WP_UnitTestCase {
 
 	function test_pmp_media_sideload_image() {
 		$new_post = $this->factory->post->create();
-		$url = 'http://publicmediaplatform.org/wp-content/uploads/logo1.png';
+		$url = 'http://blog.apps.npr.org/img/nprlogo.gif';
 		$desc = 'Test description';
 
 		$image_id = pmp_media_sideload_image($url, $new_post, $desc);
@@ -173,7 +173,7 @@ class TestFunctions extends WP_UnitTestCase {
 
 	function test_pmp_enclosures_for_media() {
 		$new_post = $this->factory->post->create();
-		$url = 'http://publicmediaplatform.org/wp-content/uploads/logo1.png';
+		$url = 'http://blog.apps.npr.org/img/nprlogo.gif';
 		$desc = 'Test description';
 
 		$image_id = pmp_media_sideload_image($url, $new_post, $desc);
