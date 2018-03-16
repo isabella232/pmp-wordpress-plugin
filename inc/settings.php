@@ -47,12 +47,12 @@ function pmp_use_api_notifications_input() {
  */
 function pmp_api_url_input() {
 	$options = get_option('pmp_settings');
-	$is_production = empty($options['pmp_api_url']) || $options['pmp_api_url'] === 'https://api.pmp.io';
-	$is_sandbox = !$is_production;
+	$is_sandbox = empty($options['pmp_api_url']) || $options['pmp_api_url'] === 'https://api-sandbox.pmp.io';
+	$is_production = !$is_sandbox;
 	?>
 		<select id="pmp_api_url" name="pmp_settings[pmp_api_url]">
-		  <option <?php echo $is_production ? 'selected' : '' ?> value="https://api.pmp.io">Production</option>
-		  <option <?php echo $is_sandbox ? 'selected' : '' ?> value="https://api-sandbox.pmp.io">Sandbox</option>
+			<option <?php echo $is_production ? 'selected' : '' ?> value="https://api.pmp.io">Production</option>
+			<option <?php echo $is_sandbox ? 'selected' : '' ?> value="https://api-sandbox.pmp.io">Sandbox</option>
 		</select>
 	<?php
 }
