@@ -107,6 +107,14 @@ function pmp_user_title_input() {
 		catch (\Pmp\Sdk\Exception\HostException $e) {
 			echo '<p style="color:#a94442"><b>Unable to connect - ' . $options['pmp_api_url'] . ' is unreachable</b></p>';
 		}
+		catch(\Guzzle\Common\Exception\RuntimeException $e ) {
+			printf(
+				'<p style="color:#a94442"><b>%1$s</b></p><pre><code>%2$s</code></pre><p>%2$s</p>',
+				wp_kses_post( __( 'Unable to connect, for the following reason:', 'pmp' ) ),
+				esc_html( $e->getMessage() ),
+				wp_kses_post( __( 'The Public Media Platform plugin will not work correctly until this error is fixed.', 'pmp' ) )
+			);
+		}
 	}
 }
 
