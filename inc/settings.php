@@ -109,7 +109,7 @@ function pmp_user_title_input() {
 		}
 		catch(\Guzzle\Common\Exception\RuntimeException $e ) {
 			printf(
-				'<p style="color:#a94442"><b>%1$s</b></p><pre><code>%2$s</code></pre><p>%2$s</p>',
+				'<p style="color:#a94442"><b>%1$s</b></p><pre><code>%2$s</code></pre><p>%3$s</p>',
 				wp_kses_post( __( 'Unable to connect, for the following reason:', 'pmp' ) ),
 				esc_html( $e->getMessage() ),
 				wp_kses_post( __( 'The Public Media Platform plugin will not work correctly until this error is fixed.', 'pmp' ) )
