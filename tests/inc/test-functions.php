@@ -124,7 +124,7 @@ class TestFunctions extends WP_UnitTestCase {
 				);
 				$array[$key] = $output;
 			}
-			$this->assertEmpty( $array, 'This is debug information for test_pmp_verify_settings' );
+			$this->assertEquals( array(), $array, 'This is debug information for test_pmp_verify_settings: ' . var_export( $array, true ) );
 		}
 	}
 
