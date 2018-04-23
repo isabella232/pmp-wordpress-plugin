@@ -80,10 +80,48 @@ class TestSettings extends WP_UnitTestCase {
 		pmp_client_id_input();
 	}
 
-	function test_pmp_client_secret_input() {
+	/**
+	 * Expectation is valid in the case that `$options['pmp_client_secret']` is not empty
+	 * or is unset, where `$options = get_option('pmp_settings')`.
+	 *
+	 * @see test_pmp_client_secret_input_option
+	 * @see pmp_client_secret_input
+	 */
+	function test_pmp_client_secret_input_nooption() {
+		// save the PMP settings that exist at this point in the test
+		$preserve = get_option( 'pmp_settings' );
+
+		delete_option( 'pmp_settings' );
+		$expect = preg_quote( '<input id="pmp_client_secret" name="pmp_settings[pmp_client_secret]" type="password" value="" />' , '/' );
+		$expect = '/' . $expect . '/';
+		$this->expectOutputRegex($expect);
+		pmp_client_secret_input();
+
+		// reset
+		update_option( 'pmp_settings', $preserve );
+	}
+
+	/**
+	 * Expectation is valid in the case that `$options['pmp_client_secret']` is not empty
+	 * where `$options = get_option('pmp_settings')`.
+	 *
+	 * @see test_pmp_client_secret_input_nooption
+	 * @see pmp_client_secret_input
+	 */
+	function test_pmp_client_secret_input_option() {
+		// save the PMP settings that exist at this point in the test
+		$preserve = get_option( 'pmp_settings' );
+
+		update_option( 'pmp_settings', array(
+			'pmp_client_secret' => 'test string',
+		) );
+
 		$expect = '/<a href="#" id="pmp_client_secret_reset">Change client secret<\/a>/';
 		$this->expectOutputRegex($expect);
 		pmp_client_secret_input();
+
+		// reset
+		update_option( 'pmp_settings', $preserve );
 	}
 
 	function test_pmp_settings_validate() {

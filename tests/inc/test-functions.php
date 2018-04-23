@@ -87,7 +87,7 @@ class TestFunctions extends WP_UnitTestCase {
 
 	function test_pmp_media_sideload_image() {
 		$new_post = $this->factory->post->create();
-		$url = 'http://publicmediaplatform.org/wp-content/uploads/logo1.png';
+		$url = 'http://blog.apps.npr.org/img/nprlogo.gif';
 		$desc = 'Test description';
 
 		$image_id = pmp_media_sideload_image($url, $new_post, $desc);
@@ -99,8 +99,37 @@ class TestFunctions extends WP_UnitTestCase {
 
 	function test_pmp_verify_settings() {
 		// Since we're setting the pmp_settings in bootstrap.php, this
-		// should return true
-		$this->assertTrue(pmp_verify_settings());
+		// test should return true
+		$this->assertTrue(
+			pmp_verify_settings(),
+			'Either pmp_verify_settings() is broken, or the option value pmp_settings is not properly set by tests/bootstrap.php. Does your test-runner have the appropriate environment variables configured?'
+		);
+
+	}
+
+	function test_pmp_verify_settings_more() {
+		$bool = pmp_verify_settings();
+		// this is for additional debug information, should pmp_verify_settings be false
+		// but on the off chance that it doesn't, we'll want some more information
+		if ( true !== $bool ) {
+			$settings = get_option( 'pmp_settings' );
+			$array = array();
+			foreach ( $settings as $key => $value ) {
+				$output = sprintf(
+					'%1$s: "%2$s" long, empty "%3$s", isset "%4$s"',
+					$key,
+					strlen( $value ),
+					empty( $value ),
+					isset( $value )
+				);
+				$array[$key] = $output;
+			}
+			$this->assertEquals( array(), $array, 'This is debug information for test_pmp_verify_settings: ' . var_export( $array, true ) );
+
+			$this->assertNotEmpty( $settings['pmp_api_url'], 'The PMP API URL is not set for this test run.' );
+			$this->assertNotEmpty( $settings['pmp_client_id'], 'The PMP client ID is not set for this test run. This will cause a number of interesting failures in the test suite. For more about why this may be the case, see https://github.com/npr/pmp-wordpress-plugin/pull/131' );
+			$this->assertNotEmpty( $settings['pmp_client_secret'], 'The PMP client secret is not set for this test run. This will cause a number of interesting failures in the test suite. For more about why this may be the case, see https://github.com/npr/pmp-wordpress-plugin/pull/131' );
+		}
 	}
 
 	function test_pmp_on_post_status_transition() {
@@ -173,7 +202,7 @@ class TestFunctions extends WP_UnitTestCase {
 
 	function test_pmp_enclosures_for_media() {
 		$new_post = $this->factory->post->create();
-		$url = 'http://publicmediaplatform.org/wp-content/uploads/logo1.png';
+		$url = 'http://blog.apps.npr.org/img/nprlogo.gif';
 		$desc = 'Test description';
 
 		$image_id = pmp_media_sideload_image($url, $new_post, $desc);
