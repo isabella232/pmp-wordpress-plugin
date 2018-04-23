@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/publicmediaplatform/pmp-wordpress
  * Description: Integrate your site's content with the <a href="https://support.pmp.io" target="_blank">Public Media Platform</a>.
  * Author: the PMP and INN nerds
- * Version: 0.2.10
+ * Version: 0.2.11
  * Author URI: https://github.com/publicmediaplatform/pmp-wordpress
  * License: MIT
  */
