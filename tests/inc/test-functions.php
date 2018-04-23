@@ -125,6 +125,10 @@ class TestFunctions extends WP_UnitTestCase {
 				$array[$key] = $output;
 			}
 			$this->assertEquals( array(), $array, 'This is debug information for test_pmp_verify_settings: ' . var_export( $array, true ) );
+
+			$this->assertNotEmpty( $settings['pmp_api_url'], 'The PMP API URL is not set for this test run.' )
+			$this->assertNotEmpty( $settings['pmp_client_id'], 'The PMP client ID is not set for this test run. This will cause a number of interesting failures in the test suite. For more about why this may be the case, see https://github.com/npr/pmp-wordpress-plugin/pull/131' )
+			$this->assertNotEmpty( $settings['pmp_client_secret'], 'The PMP client secret is not set for this test run. This will cause a number of interesting failures in the test suite. For more about why this may be the case, see https://github.com/npr/pmp-wordpress-plugin/pull/131' )
 		}
 	}
 
