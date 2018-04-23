@@ -116,6 +116,7 @@ class TestFunctions extends WP_UnitTestCase {
 					empty( $value ),
 					isset( $value )
 				);
+				print( $output );
 				error_log(var_export( $output, true));
 			}
 		}
