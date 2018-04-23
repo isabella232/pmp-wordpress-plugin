@@ -155,8 +155,8 @@ function pmp_verify_settings() {
 	$options = get_option( 'pmp_settings' );
 	return (
 		! empty( $options['pmp_api_url'] ) &&
-		! isset( $options['pmp_client_id'] ) &&
-		! isset( $options['pmp_client_secret'] )
+		isset( $options['pmp_client_id'] ) &&
+		isset( $options['pmp_client_secret'] )
 	);
 }
 
