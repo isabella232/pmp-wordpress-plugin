@@ -100,11 +100,20 @@ class TestFunctions extends WP_UnitTestCase {
 	function test_pmp_verify_settings() {
 		// Since we're setting the pmp_settings in bootstrap.php, this
 		// test should return true
-		$bool = pmp_verify_settings();
+		$this->assertTrue(
+			pmp_verify_settings(),
+			'Either pmp_verify_settings() is broken, or the option value pmp_settings is not properly set by tests/bootstrap.php. Does your test-runner have the appropriate environment variables configured?'
+		);
 
+	}
+
+	function test_pmp_verify_settings_more() {
+		$bool = pmp_verify_settings();
+		// this is for additional debug information, should pmp_verify_settings be false
 		// but on the off chance that it doesn't, we'll want some more information
 		if ( true !== $bool ) {
 			$settings = get_option( 'pmp_settings' );
+			$array = array();
 			foreach ( $settings as $key => $value ) {
 				$output = sprintf(
 					'%1$s: "%2$s" long, empty "%3$s", isset "%4$s"',
@@ -113,15 +122,10 @@ class TestFunctions extends WP_UnitTestCase {
 					empty( $value ),
 					isset( $value )
 				);
-				$this->assertEmpty( $output, $key );
+				$array[$key] = $output;
 			}
+			$this->assertEmpty( $array, 'This is debug information for test_pmp_verify_settings' );
 		}
-
-		$this->assertTrue(
-			$bool,
-			'Either pmp_verify_settings() is broken, or the option value pmp_settings is not properly set by tests/bootstrap.php. Does your test-runner have the appropriate environment variables configured?'
-		);
-
 	}
 
 	function test_pmp_on_post_status_transition() {
