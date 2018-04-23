@@ -99,11 +99,26 @@ class TestFunctions extends WP_UnitTestCase {
 
 	function test_pmp_verify_settings() {
 		// Since we're setting the pmp_settings in bootstrap.php, this
-		// should return true
+		// test should return true
 		$this->assertTrue(
 			pmp_verify_settings(),
 			'Either pmp_verify_settings() is broken, or the option value pmp_settings is not properly set by tests/bootstrap.php. Does your test-runner have the appropriate environment variables configured?'
 		);
+
+		// but on the off chance that it doesn't, we'll want some more information
+		if ( ! pmp_verify_settings() ) {
+			$settings = get_option( 'pmp_settings' );
+			foreach ( $settings as $key => $value ) {
+				$output = sprintf(
+					'%1$s: "%2$s" long, empty "%3$s", isset "%4$s"',
+					$key,
+					strlen( $value ),
+					empty( $value ),
+					isset( $value )
+				);
+				error_log(var_export( $output, true));
+			}
+		}
 	}
 
 	function test_pmp_on_post_status_transition() {
