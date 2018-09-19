@@ -109,7 +109,7 @@ function pmp_user_title_input() {
 				esc_html( $title )
 			);
 		} catch ( \Pmp\Sdk\Exception\AuthException $e ) {
-			echo '<p style="color:#a94442"><b>Unable to connect - invalid Client-Id/Secret</b></p>';
+			echo '<p style="color:#a94442"><b>Unable to connect - invalid Client-Id/Secret. Is the correct environment chosen?</b></p>';
 		} catch ( \Pmp\Sdk\Exception\HostException $e ) {
 			echo '<p style="color:#a94442"><b>Unable to connect - ' . esc_html( $options['pmp_api_url'] ) . ' is unreachable</b></p>';
 		}
