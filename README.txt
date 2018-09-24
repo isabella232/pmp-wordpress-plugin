@@ -56,6 +56,7 @@ See the [documentation on Github](https://github.com/publicmediaplatform/pmp-wor
 
 = 0.2.11 =
 
+- For PHP 7 compatibility, changes how the `PMP_NOTIFICATIONS_SECRET` constant is defined in order to prevent an "invalid salt" error causing white-screen errors. (Pull request [#144](https://github.com/npr/pmp-wordpress-plugin/pull/144) for [issue #133](https://github.com/npr/pmp-wordpress-plugin/issues/133))
 - Catches a Guzzle runtime exception that prevents the plugin from working properly, and warn users about the cause. ([#134](https://github.com/npr/pmp-wordpress-plugin/pull/134))
 - Changes the default environment of the plugin to the sandbox environment: new installations of the plugin will not automatically use production credentials ([#132](https://github.com/npr/pmp-wordpress-plugin/pull/132))
 - Improved test coverage. ([#131](https://github.com/npr/pmp-wordpress-plugin/pull/131))

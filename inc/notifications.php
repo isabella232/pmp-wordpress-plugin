@@ -1,6 +1,31 @@
 <?php
+/**
+ * Notifications handling code
+ */
 
-define('PMP_NOTIFICATIONS_SECRET', crypt(get_bloginfo('url'), wp_salt('auth')));
+/**
+ * Define some constants used in this plugin for notifications
+ */
+if ( 1 > version_compare( phpversion(), '7', '<' ) ) {
+	/*
+	 * The PHP 7 case
+	 *
+	 * This filters the salt value fed to crypt() to make sure that the
+	 * characters passed are what are valid for 
+	 *
+	 * @see https://github.com/npr/pmp-wordpress-plugin/issues/133
+	 */
+	$wp_salt_sanitized = preg_replace( '/[^\.\/0-9A-Za-z]/', '', wp_salt('auth') );
+	define('PMP_NOTIFICATIONS_SECRET', crypt( get_bloginfo( 'url' ), $wp_salt_sanitized ));
+} else {
+	/*
+	 * php versions less than 7
+	 *
+	 * This is unchanged from plugin version 0.2.10, allowing PHP 5 sites
+	 * to continue using their existing notification secret.
+	 */
+	define('PMP_NOTIFICATIONS_SECRET', crypt(get_bloginfo('url'), wp_salt('auth')));
+}
 define('PMP_NOTIFICATIONS_HUB', 'notifications');
 define('PMP_NOTIFICATIONS_TOPIC_UPDATED', 'topics/updated');
 define('PMP_NOTIFICATIONS_TOPIC_DELETED', 'topics/deleted');
