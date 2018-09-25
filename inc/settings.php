@@ -80,7 +80,6 @@ function pmp_client_id_input() {
  */
 function pmp_client_secret_input() {
 	$options = get_option( 'pmp_settings' );
-	error_log(var_export( $options, true));
 
 	if (
 		! array_key_exists( 'pmp_client_secret', $options )
@@ -163,10 +162,6 @@ function pmp_user_title_input() {
 function pmp_settings_validate( $input ) {
 	$errors = false;
 	$options = get_option( 'pmp_settings' );
-	error_log(var_export( array(
-		'options' => $options,
-		'input' => $input
-	), true));
 
 	/*
 	 * The logic behind when the value of the secret shall change.
