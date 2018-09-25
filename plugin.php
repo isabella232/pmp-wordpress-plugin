@@ -7,6 +7,7 @@
  * Version: 0.2.11
  * Author URI: https://github.com/publicmediaplatform/pmp-wordpress
  * License: MIT
+ * Text Domain: pmp
  */
 
 // check if plugin is composer-installed

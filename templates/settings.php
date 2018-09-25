@@ -10,8 +10,4 @@
 			<input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
 		</p>
 	</form>
-
-	<script type="text/template" id="pmp_client_secret_input_tmpl">
-		<input id="pmp_client_secret" name="pmp_settings[pmp_client_secret]" type="password" value="" />
-	</script>
 </div>
