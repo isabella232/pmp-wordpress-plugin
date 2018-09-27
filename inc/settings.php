@@ -81,7 +81,7 @@ function pmp_client_id_input() {
 function pmp_client_secret_input() {
 	$options = get_option( 'pmp_settings' );
 
-	if ( ! empty( $options ) && ! empty( $options['pmp_client_secret'] ) ) { ?>
+	if ( ! empty( $options ) || ! empty( $options['pmp_client_secret'] ) ) { ?>
 		<a href="#" id="pmp_client_secret_reset">Change client secret</a>
 	<?php } else { ?>
 		<input id="pmp_client_secret" name="pmp_settings[pmp_client_secret]" type="password" value="" />
