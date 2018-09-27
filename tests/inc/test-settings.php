@@ -116,7 +116,7 @@ class TestSettings extends WP_UnitTestCase {
 			'pmp_client_secret' => 'test string',
 		) );
 
-		$expect = '/<a href="#" id="pmp_client_secret_reset">Change client secret<\/a>/';
+		$expect = '/<button id="pmp_client_secret_reset_button" [^>]+>Change client secret<\/button>/';
 		$this->expectOutputRegex($expect);
 		pmp_client_secret_input();
 
