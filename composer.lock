@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9d61ecef92677c1a13a58188733c4365",
+    "content-hash": "d1c17ef66310221733793aa2cc608b0a",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -239,16 +239,16 @@
         },
         {
             "name": "publicmediaplatform/pmpsdk",
-            "version": "v2.0.0",
+            "version": "v2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/npr/pmp-php-sdk.git",
-                "reference": "75c77dbf8ed3402bb4a4129c62d33dbce7b10cf0"
+                "reference": "17a62e6e24a4e0828ce29af84b67dc2e76b3f792"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/npr/pmp-php-sdk/zipball/75c77dbf8ed3402bb4a4129c62d33dbce7b10cf0",
-                "reference": "75c77dbf8ed3402bb4a4129c62d33dbce7b10cf0",
+                "url": "https://api.github.com/repos/npr/pmp-php-sdk/zipball/17a62e6e24a4e0828ce29af84b67dc2e76b3f792",
+                "reference": "17a62e6e24a4e0828ce29af84b67dc2e76b3f792",
                 "shasum": ""
             },
             "require": {
@@ -258,8 +258,9 @@
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Pmp\\": "src/"
+                "psr-4": {
+                    "Pmp\\": "src/Pmp",
+                    "Pmp\\Sdk\\": "src/Pmp/Sdk"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -273,7 +274,7 @@
                 "publicmediaplatform",
                 "pubmedia"
             ],
-            "time": "2018-09-19T03:48:59+00:00"
+            "time": "2018-09-27T03:39:06+00:00"
         }
     ],
     "packages-dev": [
