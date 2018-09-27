@@ -69,7 +69,7 @@ function pmp_api_url_input() {
 function pmp_client_id_input() {
 	$options = get_option( 'pmp_settings' );
 	?>
-		<input id="pmp_client_id" name="pmp_settings[pmp_client_id]" type="text" value="<?php echo esc_attr( $options['pmp_client_id'] ); ?>" />
+		<input id="pmp_client_id" name="pmp_settings[pmp_client_id]" type="text" value="<?php echo esc_attr( $options['pmp_client_id'] ); ?>" style="width: 25em; max-width: 100%;" />
 	<?php
 }
 
@@ -81,10 +81,38 @@ function pmp_client_id_input() {
 function pmp_client_secret_input() {
 	$options = get_option( 'pmp_settings' );
 
-	if ( ! empty( $options ) || ! empty( $options['pmp_client_secret'] ) ) { ?>
-		<a href="#" id="pmp_client_secret_reset">Change client secret</a>
+	if (
+		! array_key_exists( 'pmp_client_secret', $options )
+		|| (
+			array_key_exists( 'pmp_client_secret', $options )
+			&& empty( $options['pmp_client_secret'] )
+		)
+	) { ?>
+		<input id="pmp_client_secret" name="pmp_settings[pmp_client_secret]" type="password" value="" style="width: 25em; max-width: 100%;" />
 	<?php } else { ?>
-		<input id="pmp_client_secret" name="pmp_settings[pmp_client_secret]" type="password" value="" />
+		<div id="mode-change">
+			<button id="pmp_client_secret_reset_button" class="button">Change client secret</button>
+		</div>
+		<div id="mode-reset" class="hidden">
+			<input disabled id="pmp_client_secret_reset" name="pmp_settings[pmp_client_secret_reset]" type="checkbox" value="reset" style="display:none;"/>
+			<label for="pmp_client_secret_reset" class="hidden" >
+				<?php
+					echo wp_kses_post( __( 'Check this box if you are currently changing the client secret.', 'pmp' ) );
+				?>
+			</label>
+
+			<input disabled id="pmp_client_secret" name="pmp_settings[pmp_client_secret]" type="password" value="" style="width: 25em; max-width: 100%;" />
+			<label for="pmp_client_secret" style="display: block; clear: both; margin: 4px 0;">
+				<?php
+					echo wp_kses_post( __( 'If left blank, this form will unset the saved PMP Client Secret.', 'pmp' ) );
+				?>
+			</label>
+			<button disabled id="pmp_client_secret_reset_reset" class="button">
+				<?php
+					echo wp_kses_post( __( 'Cancel', 'pmp' ) );
+				?>
+			</button>
+		</div>
 	<?php }
 }
 /**
@@ -135,9 +163,92 @@ function pmp_settings_validate( $input ) {
 	$errors = false;
 	$options = get_option( 'pmp_settings' );
 
-	if ( empty( $input['pmp_client_secret'] ) && ! empty( $options['pmp_client_secret'] ) ) {
+	/*
+	 * The logic behind when the value of the secret shall change.
+	 *
+	 * The value for $options['pmp_client_secret'] has these possible values:
+	 * - unset (array key does not exist)
+	 * - empty
+	 * - not-empty, aka "set"
+	 *
+	 * $input['pmp_client_secret'] can be:
+	 * - unset
+	 * - empty
+	 * - set
+	 *
+	 * The checkbox $input['pmp_client_secret_reset'], which indicates that the
+	 * value of the option should be overwritten by the value of the input,
+	 * can have these possible values from the form pmp_client_secret_input():
+	 * - 'reset': checked
+	 * - unset: unchecked
+	 *
+	 * This results in a 3x3x2 matrix of possible setups.
+	 * Well, we can simplify the $input['pmp_client_secret'] to set/not, so
+	 * it's really a 3x2x2 matrix of 12 possible settings.
+	 *
+	 * Here's my notes on when we should change, and when changing results in no effective change
+	 * - option unset
+	 *     - box checked
+	 *         - input not set: change results in no change
+	 *         - input set: change results in desired change
+	 *     - box unchecked
+	 *         - input not set: change undesired
+	 *         - input set: change undesired
+	 * - option empty
+	 *     - box checked
+	 *         - input not set: change results in no change
+	 *         - input set: change results in desired change
+	 *     - box unchecked
+	 *         - input not set: change undesired
+	 *         - input set: change undesired
+	 * - option set
+	 *     - box checked
+	 *         - input not set: change results in desired change of unsetting the set option, for #130
+	 *         - input set: change results in desired change
+	 *     - box unchecked
+	 *         - input not set: change undesired
+	 *         - input set: change undesired
+	 *
+	 * This cannot be reduced to:
+	 * - box unchecked
+	 *     - keep option
+	 * - box checked
+	 *     - input empty: unset option
+	 *     - input set: update option
+	 * because the inital state of the plugin's form is that the value is unset and the box is unchecked.
+	 *
+	 * This can be reduced to:
+	 * - option unset/empty
+	 *      - accept input
+	 * - option set
+	 *      - box checked: accept input
+	 * - else: keep old input
+	 *
+	 * It could be reduced further, but would lose readability and thinkability.
+	 */
+	if (
+		! isset ( $options['pmp_client_secret'] )
+		|| empty ( $options['pmp_client_secret'] )
+	) {
+		$input['pmp_client_secret'] = $input['pmp_client_secret'];
+	} elseif (
+		isset( $options['pmp_client_secret'] )
+		&& ! empty( $options['pmp_client_secret'] )
+		&& isset( $input['pmp_client_secret_reset'] )
+		&& 'reset' === $input['pmp_client_secret_reset']
+	) {
+		$input['pmp_client_secret'] = $input['pmp_client_secret'];
+	} else {
 		$input['pmp_client_secret'] = $options['pmp_client_secret'];
 	}
+
+	// cleanup options that are empty.
+	if ( empty( $input['pmp_client_secret'] ) ) {
+		unset( $input['pmp_client_secret'] );
+	}
+
+	// this does not need to be saved, ever.
+	unset( $input['pmp_client_secret_reset'] );
 
 	if ( ! empty( $input['pmp_api_url'] ) && false == filter_var( $input['pmp_api_url'], FILTER_VALIDATE_URL ) ) {
 		add_settings_error( 'pmp_settings_fields', 'pmp_api_url_error', 'Please enter a valid PMP API URL.', 'error' );
