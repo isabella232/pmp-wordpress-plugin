@@ -124,31 +124,87 @@ class TestSettings extends WP_UnitTestCase {
 		update_option( 'pmp_settings', $preserve );
 	}
 
-	function test_pmp_settings_validate() {
+	/**
+	 * Make sure the pmp_api_url is well-formed: things not a URL should not be accepted.
+	 */
+	function test_pmp_settings_validate__invalid_url() {
 		$options = get_option('pmp_settings');
 
-		// Make sure the pmp_api_url is well-formed.
 		$invalid_url_input = array(
 			'pmp_api_url' => 'NOT_AN_URL'
 		);
 		$result = pmp_settings_validate($invalid_url_input);
 		$this->assertEquals($result['pmp_api_url'], '');
+	}
 
-		// If the pmp_client_secret option is set, but the input sent over the wire is blank,
-		// don't empty pmp_client_secret.
+	/**
+	 * Make sure the pmp_api_url is well-formed: URLS should be accepted.
+	 */
+	function test_pmp_settings_validate_valid_url() {
+		$options = get_option('pmp_settings');
+
+		$valid_url_input = array(
+			'pmp_api_url' => 'https://api.npr.org/'
+		);
+		$result = pmp_settings_validate($invalid_url_input);
+		$this->assertEquals( $result['pmp_api_url'], $valid_url_input['pmp_api_url'] );
+
+		$valid_url_input = array(
+			'pmp_api_url' => 'https://api-s1.npr.org/'
+		);
+		$result = pmp_settings_validate($invalid_url_input);
+		$this->assertEquals( $result['pmp_api_url'], $valid_url_input['pmp_api_url'] );
+	}
+
+	/**
+	 * If the pmp_client_secret option is set,
+	 * but the input sent over the wire is blank,
+	 * don't empty pmp_client_secret.
+	 */
+	function test_pmp_settings_validate_empty_secret() {
+		$options = get_option( 'pmp_settings' );
+
 		$client_secret_blank_input = array(
-			'pmp_api_url' => $options['pmp_api_url'],
-			'pmp_client_id' => $options['pmp_client_id']
 		);
 		$result = pmp_settings_validate($client_secret_blank_input);
-		$this->assertEquals($result['pmp_client_secret'], $options['pmp_client_secret']);
+		$this->assertEquals( $result['pmp_client_secret'], $options['pmp_client_secret'] );
+	}
+
+	/**
+	 * If the pmp_client_secret option is set,
+	 * and the input secret is blank,
+	 * and the "reset" input is sent,
+	 * do empty pmp_client_secret.
+	 */
+	function test_pmp_settings_validate_secret_noreset() {
+		$options = get_option( 'pmp_settings' );
+
+		// Likewise, if the pmp_client_secret input is not blank, make sure the result
+		// includes it.
+		$client_secret_new_input = array_merge(array(
+			'pmp_client_secret_reset' => 'reset',
+		), $client_secret_blank_input);
+		$result = pmp_settings_validate($client_secret_new_input);
+		$this->assertEmpty( $result['pmp_client_secret'] );
+	}
+
+	/**
+	 * If the pmp_client_secret option is set,
+	 * and the input secret is set,
+	 * and the "reset" input is sent,
+	 * expect the secret to match the input secret
+	 */
+	function test_pmp_settings_validate_secret_reset() {
+		$options = get_option('pmp_settings');
+		$options = get_option( 'pmp_settings' );
 
 		// Likewise, if the pmp_client_secret input is not blank, make sure the result
 		// includes it.
 		$client_secret_new_input = array_merge(array(
 			'pmp_client_secret' => 'NEW_CLIENT_SECRET'
+			'pmp_client_secret_reset' => 'reset',
 		), $client_secret_blank_input);
 		$result = pmp_settings_validate($client_secret_new_input);
-		$this->assertEquals($client_secret_new_input['pmp_client_secret'], $result['pmp_client_secret']);
+		$this->assertEquals( $client_secret_new_input['pmp_client_secret'], $result['pmp_client_secret'] );
 	}
 }
