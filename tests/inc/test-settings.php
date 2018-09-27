@@ -146,7 +146,7 @@ class TestSettings extends WP_UnitTestCase {
 		$valid_url_input = array(
 			'pmp_api_url' => 'https://api.npr.org/',
 		);
-		$result = pmp_settings_validate($invalid_url_input);
+		$result = pmp_settings_validate($valid_url_input);
 		$this->assertEquals( $result['pmp_api_url'], $valid_url_input['pmp_api_url'] );
 
 		$valid_url_input = array(
@@ -181,9 +181,9 @@ class TestSettings extends WP_UnitTestCase {
 
 		// Likewise, if the pmp_client_secret input is not blank, make sure the result
 		// includes it.
-		$client_secret_new_input = array_merge(array(
+		$client_secret_new_input = array(
 			'pmp_client_secret_reset' => 'reset',
-		), $client_secret_blank_input);
+		);
 		$result = pmp_settings_validate($client_secret_new_input);
 		$this->assertEmpty( $result['pmp_client_secret'] );
 	}
@@ -200,10 +200,10 @@ class TestSettings extends WP_UnitTestCase {
 
 		// Likewise, if the pmp_client_secret input is not blank, make sure the result
 		// includes it.
-		$client_secret_new_input = array_merge(array(
+		$client_secret_new_input = array(
 			'pmp_client_secret' => 'NEW_CLIENT_SECRET',
 			'pmp_client_secret_reset' => 'reset',
-		), $client_secret_blank_input);
+		);
 		$result = pmp_settings_validate($client_secret_new_input);
 		$this->assertEquals( $client_secret_new_input['pmp_client_secret'], $result['pmp_client_secret'] );
 	}
