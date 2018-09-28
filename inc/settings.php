@@ -239,7 +239,9 @@ function pmp_settings_validate( $input ) {
 		&& isset( $input['pmp_client_secret_reset'] )
 		&& 'reset' === $input['pmp_client_secret_reset']
 	) {
-		$input['pmp_client_secret'] = $input['pmp_client_secret'];
+		if ( isset( $input['pmp_client_secret'] ) ) {
+			$input['pmp_client_secret'] = $input['pmp_client_secret'];
+		}
 	} else {
 		$input['pmp_client_secret'] = $options['pmp_client_secret'];
 	}

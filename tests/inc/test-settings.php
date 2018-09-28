@@ -92,7 +92,7 @@ class TestSettings extends WP_UnitTestCase {
 		$preserve = get_option( 'pmp_settings' );
 
 		delete_option( 'pmp_settings' );
-		$expect = preg_quote( '<input id="pmp_client_secret" name="pmp_settings[pmp_client_secret]" type="password" value="" />' , '/' );
+		$expect = preg_quote( '<input id="pmp_client_secret" name="pmp_settings[pmp_client_secret]" type="password" value=""' , '/' );
 		$expect = '/' . $expect . '/';
 		$this->expectOutputRegex($expect);
 		pmp_client_secret_input();
@@ -179,8 +179,6 @@ class TestSettings extends WP_UnitTestCase {
 	function test_pmp_settings_validate_secret_noreset() {
 		$options = get_option( 'pmp_settings' );
 
-		// Likewise, if the pmp_client_secret input is not blank, make sure the result
-		// includes it.
 		$client_secret_new_input = array(
 			'pmp_client_secret_reset' => 'reset',
 		);
