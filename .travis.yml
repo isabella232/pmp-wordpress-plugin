@@ -32,6 +32,17 @@ language: php
 
 matrix:
     include:
+      # PHPUnit 7 not supported by WordPress
+      # PHPUnit 6
+      - php: 7.1
+        env: WP_VERSION=4.8 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+      - php: 7.1
+        env: WP_VERSION=4.9 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+      # PHPUnit 6
+      - php: 7.0
+        env: WP_VERSION=4.8 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
+      - php: 7.0
+        env: WP_VERSION=4.9 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
       # PHPUnit 5
       - php: 5.6
         env: WP_VERSION=4.1 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
@@ -51,17 +62,6 @@ matrix:
         env: WP_VERSION=4.8 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
       - php: 5.6
         env: WP_VERSION=4.9 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
-      # PHPUnit 6
-      - php: 7.0
-        env: WP_VERSION=4.8 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
-      - php: 7.0
-        env: WP_VERSION=4.9 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
-      # PHPUnit 6
-      - php: 7.1
-        env: WP_VERSION=4.8 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
-      - php: 7.1
-        env: WP_VERSION=4.9 WP_TESTS_DIR=/tmp/wordpress/tests/phpunit WP_CORE_DIR=/tmp/wordpress
-      # PHPUnit 7 not supported by WordPress
 
 branches:
     only:

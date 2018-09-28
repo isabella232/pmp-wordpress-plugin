@@ -129,6 +129,8 @@ class TestFunctions extends WP_UnitTestCase {
 			$this->assertNotEmpty( $settings['pmp_api_url'], 'The PMP API URL is not set for this test run.' );
 			$this->assertNotEmpty( $settings['pmp_client_id'], 'The PMP client ID is not set for this test run. This will cause a number of interesting failures in the test suite. For more about why this may be the case, see https://github.com/npr/pmp-wordpress-plugin/pull/131' );
 			$this->assertNotEmpty( $settings['pmp_client_secret'], 'The PMP client secret is not set for this test run. This will cause a number of interesting failures in the test suite. For more about why this may be the case, see https://github.com/npr/pmp-wordpress-plugin/pull/131' );
+		} else {
+			$this->markTestSkipped('This test exists for debugging test environments when the test environment is not ocrrectly configured.');
 		}
 	}
 
@@ -197,7 +199,8 @@ class TestFunctions extends WP_UnitTestCase {
 
 	function test_pmp_handle_push() {
 		$this->markTestSkipped(
-			'Functional test of `pmp_handle_push` performed by `test_pmp_push_to_pmp`');
+			'Functional test of `pmp_handle_push` performed by `test_pmp_push_to_pmp`'
+		);
 	}
 
 	function test_pmp_enclosures_for_media() {

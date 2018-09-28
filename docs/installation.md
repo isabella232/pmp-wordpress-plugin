@@ -2,7 +2,7 @@
 
 ## Installation
 
-Follow the standard WordPress procedure for [automatic plugin installation](https://codex.wordpress.org/Managing_Plugins#Automatic_Plugin_Installation), and search for "PMP" or "Public Media Platform".  Using the [official plugin](https://wordpress.org/plugins/search.php?type=term&q=PMP) from the Wordpress plugin directory allows you to automatically get updates.
+Follow the standard WordPress procedure for [automatic plugin installation](https://codex.wordpress.org/Managing_Plugins#Automatic_Plugin_Installation), and search for "PMP" or "Public Media Platform".  Using the [official plugin](https://wordpress.org/plugins/public-media-platform/) from the Wordpress plugin directory allows you to automatically get updates.
 
 If you'd prefer the bleeding edge `master` version of the plugin, you'll have to install it manually, following the standard procedure for [manual plugin installation](http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation).  You can get the [latest code zip here](https://github.com/publicmediaplatform/phpsdk/archive/master.zip).
 

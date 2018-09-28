@@ -82,7 +82,9 @@ function pmp_client_secret_input() {
 	$options = get_option( 'pmp_settings' );
 
 	if (
-		! array_key_exists( 'pmp_client_secret', $options )
+		empty( $options )
+		|| ! is_array( $options )
+		|| ! array_key_exists( 'pmp_client_secret', $options )
 		|| (
 			array_key_exists( 'pmp_client_secret', $options )
 			&& empty( $options['pmp_client_secret'] )
@@ -137,7 +139,7 @@ function pmp_user_title_input() {
 				esc_html( $title )
 			);
 		} catch ( \Pmp\Sdk\Exception\AuthException $e ) {
-			echo '<p style="color:#a94442"><b>Unable to connect - invalid Client-Id/Secret</b></p>';
+			echo '<p style="color:#a94442"><b>Unable to connect - invalid Client-Id/Secret. Is the correct environment chosen?</b></p>';
 		} catch ( \Pmp\Sdk\Exception\HostException $e ) {
 			echo '<p style="color:#a94442"><b>Unable to connect - ' . esc_html( $options['pmp_api_url'] ) . ' is unreachable</b></p>';
 		}
@@ -237,7 +239,9 @@ function pmp_settings_validate( $input ) {
 		&& isset( $input['pmp_client_secret_reset'] )
 		&& 'reset' === $input['pmp_client_secret_reset']
 	) {
-		$input['pmp_client_secret'] = $input['pmp_client_secret'];
+		if ( isset( $input['pmp_client_secret'] ) ) {
+			$input['pmp_client_secret'] = $input['pmp_client_secret'];
+		}
 	} else {
 		$input['pmp_client_secret'] = $options['pmp_client_secret'];
 	}
