@@ -82,7 +82,8 @@ function pmp_client_secret_input() {
 	$options = get_option( 'pmp_settings' );
 
 	if (
-		! isset( $options )
+		empty( $options )
+		|| ! is_array( $options )
 		|| ! array_key_exists( 'pmp_client_secret', $options )
 		|| (
 			array_key_exists( 'pmp_client_secret', $options )

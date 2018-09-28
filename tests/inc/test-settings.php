@@ -152,7 +152,7 @@ class TestSettings extends WP_UnitTestCase {
 		$valid_url_input = array(
 			'pmp_api_url' => 'https://api-s1.npr.org/',
 		);
-		$result = pmp_settings_validate($invalid_url_input);
+		$result = pmp_settings_validate($valid_url_input);
 		$this->assertEquals( $result['pmp_api_url'], $valid_url_input['pmp_api_url'] );
 	}
 
@@ -185,7 +185,7 @@ class TestSettings extends WP_UnitTestCase {
 			'pmp_client_secret_reset' => 'reset',
 		);
 		$result = pmp_settings_validate($client_secret_new_input);
-		$this->assertEmpty( $result['pmp_client_secret'] );
+		$this->assertFalse( array_key_exists( 'pmp_client_secret', $result ) );
 	}
 
 	/**
