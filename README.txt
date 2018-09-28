@@ -59,10 +59,11 @@ See the [documentation on Github](https://github.com/publicmediaplatform/pmp-wor
 
 - Adds support for PHP 7.
 - Removes support for PHP versions before 5.5, and sets a `Requires PHP: 5.5` flag in `readme.txt`.
-- Updates to [PMP PHP SDK version 2.0.0](https://github.com/npr/pmp-php-sdk/releases/tag/v2.0.0). (Pull request [#143]() for issue [#142](https://github.com/npr/pmp-wordpress-plugin/issues/142)) Changes affecting this plugin are as follows:
+- Updates to [PMP PHP SDK version 2.0.2](https://github.com/npr/pmp-php-sdk/releases/tag/v2.0.2). (Pull request [#143](https://github.com/npr/pmp-wordpress-plugin/pull/143) for issue [#142](https://github.com/npr/pmp-wordpress-plugin/issues/142)) and [#145](https://github.com/npr/pmp-wordpress-plugin/issues/145). Changes affecting this plugin are as follows:
 	- Upgrades to Guzzle 6
 	- Adds support for PHP 7.0 and later
 	- Removes support for PHP versions before 5.5
+	- Provides a new-and-updated PHAR file to bundle in this plugin
 - For PHP 7 compatibility, changes how the `PMP_NOTIFICATIONS_SECRET` constant is defined in order to prevent an "invalid salt" error causing white-screen errors. (Pull request [#144](https://github.com/npr/pmp-wordpress-plugin/pull/144) for [issue #133](https://github.com/npr/pmp-wordpress-plugin/issues/133))
 - Catches a Guzzle runtime exception that prevents the plugin from working properly, and warn users about the cause. ([#134](https://github.com/npr/pmp-wordpress-plugin/pull/134))
 - Changes the default environment of the plugin to the sandbox environment: new installations of the plugin will not automatically use production credentials ([#132](https://github.com/npr/pmp-wordpress-plugin/pull/132))
