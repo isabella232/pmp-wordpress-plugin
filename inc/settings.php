@@ -254,13 +254,27 @@ function pmp_settings_validate( $input ) {
 	// this does not need to be saved, ever.
 	unset( $input['pmp_client_secret_reset'] );
 
+	// Make sure the API URL is a valid URL.
 	if ( ! empty( $input['pmp_api_url'] ) && false == filter_var( $input['pmp_api_url'], FILTER_VALIDATE_URL ) ) {
 		add_settings_error( 'pmp_settings_fields', 'pmp_api_url_error', 'Please enter a valid PMP API URL.', 'error' );
 		$input['pmp_api_url'] = '';
 		$errors = true;
-	} else {
-		add_settings_error( 'pmp_settings_fields', 'pmp_settings_updated', 'PMP settings successfully updated!', 'updated' );
-		$errors = true;
+	}
+
+	// If trying to enable the API notifications, but the secret or the ID aren't set, don't enable notifications
+	if (
+		isset( $input['pmp_use_api_notifications'] ) && ! empty( $input['pmp_use_api_notifications'] )
+		&& (
+			empty( $input['pmp_client_id'] )
+			||
+			(
+				empty( $options['pmp_client_secret'] )
+				||
+				empty( $input['pmp_client_secret'] )
+			)
+		)
+	) {
+		unset( $input['pmp_use_api_notifications'] );
 	}
 
 	if ( ! empty( $input['pmp_use_api_notifications'] ) && ! isset( $options['pmp_use_api_notifications'] ) ) {

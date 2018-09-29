@@ -76,7 +76,14 @@ add_action('template_redirect', 'pmp_notifications_template_redirect');
 function pmp_send_subscription_request($mode='subscribe', $topic_url) {
 	$ret = pmp_post_subscription_data($mode, $topic_url);
 
-	if ($ret['response']['code'] == 204) {
+	if ( is_wp_error( $ret ) ) {
+		$return = array();
+		foreach ( $ret->errors as $code => $message ) {
+			$return[] = wp_kses_post( $message[0] );
+		}
+		return implode( $return, '<br/>');
+	}
+	else if ($ret['response']['code'] == 204) {
 		return true;
 	}
 	else if (!empty($ret['body'])) {
@@ -100,6 +107,17 @@ function pmp_post_subscription_data($mode, $topic_url) {
 	$trimmed = rtrim($settings['pmp_api_url'], '/');
 	$hub_url =  $trimmed . '/' . PMP_NOTIFICATIONS_HUB;
 	$hub_post_url = str_replace('api', 'publish', $trimmed) . '/' . PMP_NOTIFICATIONS_HUB;
+
+	if (
+		! isset( $settings['pmp_api_url'] )
+		|| ! isset( $settings['pmp_client_id'] )
+		|| ! isset( $settings['pmp_client_secret'] )
+	) {
+		return new WP_Error(
+			'pmp_sdk',
+			__( 'Unable to update subscription data: one or more of pmp_api_url, pmp_client_id, and pmp_client_secret were not set.', 'pmp' )
+		);
+	}
 
 	$sdk = new \Pmp\Sdk(
 		$settings['pmp_api_url'],
@@ -132,9 +150,9 @@ function pmp_post_subscription_data($mode, $topic_url) {
  *
  * @since 0.3
  */
-function pmp_store_verification_token($topic) {
-	$verify_token = hash('sha256', REQUEST_TIME);
-	set_transient(pmp_get_verify_key($topic), $verify_token, HOUR_IN_SECONDS);
+function pmp_store_verification_token( $topic ) {
+	$verify_token = hash( 'sha256', $_SERVER['REQUEST_TIME'] );
+	set_transient( pmp_get_verify_key( $topic ), $verify_token, HOUR_IN_SECONDS );
 	return $verify_token;
 }
 
