@@ -185,7 +185,7 @@ function pmp_subscription_verification($data) {
 
 	$settings = get_option('pmp_settings');
 
-	if (isset($settings['pmp_use_api_notifications']) && $settings['pmp_use_api_notifications'] == 'on')
+	if (isset($settings['pmp_use_api_notifications']) && 'on' === $settings['pmp_use_api_notifications'] )
 		$mode = 'unsubscribe';
 	else
 		$mode = 'subscribe';
