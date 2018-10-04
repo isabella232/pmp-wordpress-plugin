@@ -51,12 +51,12 @@ function pmp_use_api_notifications_input() {
  */
 function pmp_api_url_input() {
 	$options = get_option( 'pmp_settings' );
-	$is_sandbox = empty( $options['pmp_api_url'] ) || 'https://api-sandbox.pmp.io' === $options['pmp_api_url'] ;
+	$is_sandbox = empty( $options['pmp_api_url'] ) || 'https://api-sandbox.pmp.io' === $options['pmp_api_url'];
 	$is_production = ! $is_sandbox;
 	?>
 		<select id="pmp_api_url" name="pmp_settings[pmp_api_url]">
-			<option <?php echo $is_production ? 'selected' : '' ; ?> value="https://api.pmp.io">Production</option>
-			<option <?php echo $is_sandbox ? 'selected' : '' ; ?> value="https://api-sandbox.pmp.io">Sandbox</option>
+			<option <?php echo $is_production ? 'selected' : ''; ?> value="https://api.pmp.io">Production</option>
+			<option <?php echo $is_sandbox ? 'selected' : ''; ?> value="https://api-sandbox.pmp.io">Sandbox</option>
 		</select>
 	<?php
 }
@@ -89,7 +89,8 @@ function pmp_client_secret_input() {
 			array_key_exists( 'pmp_client_secret', $options )
 			&& empty( $options['pmp_client_secret'] )
 		)
-	) { ?>
+	) {
+		?>
 		<input id="pmp_client_secret" name="pmp_settings[pmp_client_secret]" type="password" value="" style="width: 25em; max-width: 100%;" />
 	<?php } else { ?>
 		<div id="mode-change">
@@ -115,7 +116,8 @@ function pmp_client_secret_input() {
 				?>
 			</button>
 		</div>
-	<?php }
+	<?php
+	}
 }
 /**
  * Static field for currently connected user
@@ -126,8 +128,7 @@ function pmp_user_title_input() {
 	$options = get_option( 'pmp_settings' );
 	if ( empty( $options['pmp_api_url'] ) || empty( $options['pmp_client_id'] ) || empty( $options['pmp_client_secret'] ) ) {
 		echo '<p><em>Not connected</em></p>';
-	}
-	else {
+	} else {
 		try {
 			$sdk = new SDKWrapper();
 			$me = $sdk->fetchUser( 'me' );
@@ -142,8 +143,7 @@ function pmp_user_title_input() {
 			echo '<p style="color:#a94442"><b>Unable to connect - invalid Client-Id/Secret. Is the correct environment chosen?</b></p>';
 		} catch ( \Pmp\Sdk\Exception\HostException $e ) {
 			echo '<p style="color:#a94442"><b>Unable to connect - ' . esc_html( $options['pmp_api_url'] ) . ' is unreachable</b></p>';
-		}
-		catch(\Guzzle\Common\Exception\RuntimeException $e ) {
+		} catch ( \Guzzle\Common\Exception\RuntimeException $e ) {
 			printf(
 				'<p style="color:#a94442"><b>%1$s</b></p><pre><code>%2$s</code></pre><p>%3$s</p>',
 				wp_kses_post( __( 'Unable to connect, for the following reason:', 'pmp' ) ),
@@ -158,7 +158,7 @@ function pmp_user_title_input() {
  * Field validations
  *
  * @since 0.1
- * @param Array $input The form input that gets passed to all validation functions
+ * @param Array $input The form input that gets passed to all validation functions.
  * @return Array
  */
 function pmp_settings_validate( $input ) {
@@ -229,10 +229,12 @@ function pmp_settings_validate( $input ) {
 	 * It could be reduced further, but would lose readability and thinkability.
 	 */
 	if (
-		! isset ( $options['pmp_client_secret'] )
-		|| empty ( $options['pmp_client_secret'] )
+		! isset( $options['pmp_client_secret'] )
+		|| empty( $options['pmp_client_secret'] )
 	) {
-		$input['pmp_client_secret'] = $input['pmp_client_secret'];
+		if ( isset( $input['pmp_client_secret'] ) ) {
+			$input['pmp_client_secret'] = $input['pmp_client_secret'];
+		}
 	} elseif (
 		isset( $options['pmp_client_secret'] )
 		&& ! empty( $options['pmp_client_secret'] )
@@ -254,24 +256,38 @@ function pmp_settings_validate( $input ) {
 	// this does not need to be saved, ever.
 	unset( $input['pmp_client_secret_reset'] );
 
-	if ( ! empty( $input['pmp_api_url'] ) && false == filter_var( $input['pmp_api_url'], FILTER_VALIDATE_URL ) ) {
+	// Make sure the API URL is a valid URL.
+	if ( ! empty( $input['pmp_api_url'] ) && false === filter_var( $input['pmp_api_url'], FILTER_VALIDATE_URL ) ) {
 		add_settings_error( 'pmp_settings_fields', 'pmp_api_url_error', 'Please enter a valid PMP API URL.', 'error' );
 		$input['pmp_api_url'] = '';
 		$errors = true;
-	} else {
-		add_settings_error( 'pmp_settings_fields', 'pmp_settings_updated', 'PMP settings successfully updated!', 'updated' );
-		$errors = true;
+	}
+
+	// If trying to enable the API notifications, but the secret or the ID aren't set, don't enable notifications.
+	if (
+		isset( $input['pmp_use_api_notifications'] ) && ! empty( $input['pmp_use_api_notifications'] )
+		&& (
+			empty( $input['pmp_client_id'] )
+			||
+			(
+				empty( $options['pmp_client_secret'] )
+				||
+				empty( $input['pmp_client_secret'] )
+			)
+		)
+	) {
+		unset( $input['pmp_use_api_notifications'] );
 	}
 
 	if ( ! empty( $input['pmp_use_api_notifications'] ) && ! isset( $options['pmp_use_api_notifications'] ) ) {
-		foreach (pmp_get_topic_urls() as $topic_url) {
-			$result = pmp_send_subscription_request('subscribe', $topic_url);
+		foreach ( pmp_get_topic_urls() as $topic_url ) {
+			$result = pmp_send_subscription_request( 'subscribe', $topic_url );
 			if ( true !== $result ) {
 				add_settings_error( 'pmp_settings_fields', 'pmp_notifications_subscribe_error', $result, 'error' );
 				$errors = true;
 			}
 		}
-	} else if ( empty( $input['pmp_use_api_notifications'] ) && isset( $options['pmp_use_api_notifications'] ) ) {
+	} elseif ( empty( $input['pmp_use_api_notifications'] ) && isset( $options['pmp_use_api_notifications'] ) ) {
 		foreach ( pmp_get_topic_urls() as $topic_url ) {
 			$result = pmp_send_subscription_request( 'unsubscribe', $topic_url );
 			if ( true !== $result ) {

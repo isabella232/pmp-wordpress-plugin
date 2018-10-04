@@ -447,14 +447,15 @@ function pmp_get_my_guid() {
 	$pmp_my_guid_transient_key = 'pmp_my_guid';
 	$pmp_my_guid_transient = get_transient($pmp_my_guid_transient_key);
 
-	if (!empty($pmp_my_guid_transient))
+	if ( ! empty( $pmp_my_guid_transient ) ) {
 		return $pmp_my_guid_transient;
+	}
 
 	$sdk = new SDKWrapper();
-	$me = $sdk->fetchUser('me');
+	$me = $sdk->fetchUser( 'me' );
 
 	$pmp_my_guid_transient = $me->attributes->guid;
-	set_transient($pmp_my_guid_transient_key, $pmp_my_guid_transient, 0);
+	set_transient( $pmp_my_guid_transient_key, $pmp_my_guid_transient, 0 );
 	return $pmp_my_guid_transient;
 }
 

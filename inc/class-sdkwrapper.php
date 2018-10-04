@@ -12,6 +12,14 @@ class SDKWrapper {
 	public function __construct() {
 		$settings = get_option('pmp_settings');
 
+		if (
+			! isset( $settings['pmp_api_url'] )
+			|| ! isset( $settings['pmp_client_id'] )
+			|| ! isset( $settings['pmp_client_secret'] )
+		) {
+			throw new Pmp\Sdk\Exception\AuthException( 'need to set the API URL, client ID, or client secret' );
+		}
+
 		$this->sdk = new \Pmp\Sdk(
 			$settings['pmp_api_url'],
 			$settings['pmp_client_id'],
@@ -20,7 +28,11 @@ class SDKWrapper {
 	}
 
 	public function __call($name, $args) {
-		return call_user_func_array(array($this->sdk, $name), $args);
+		if ( is_a( $this->sdk, 'Pmp\Sdk' ) ) {
+			return call_user_func_array(array($this->sdk, $name), $args);
+		} else {
+			return false;
+		}
 	}
 
 	/**
