@@ -206,3 +206,118 @@ class TestSettings extends WP_UnitTestCase {
 		$this->assertEquals( $client_secret_new_input['pmp_client_secret'], $result['pmp_client_secret'] );
 	}
 }
+
+class TestSettingsPage extends WP_UnitTestCase {
+	/**
+	 * Variable used to preserve the settings.
+	 */
+	private $options_backup = null;
+
+	/**
+	 * preserve setting by saving them in the $options_backup variable.
+	 */
+	public function setUp() {
+		parent::setUp();
+		$this->options_backup = get_option( 'pmp_settings' );
+	}
+
+	/**
+	 * Restore settings from the $options_backup variable.
+	 */
+	public function tearDown() {
+		update_option( 'pmp_settings', $this->options_backup );
+		parent::tearDown();
+	}
+
+	/**
+	 * Generate an array containing all possible settings values for this plugin.
+	 *
+	 * Emptystring values here will be interpreted by $this->test_settings_no_exceptions()
+	 * as an instruction to not set that option during that iteration of the test.
+	 *
+	 * getenv calls here match those seen in tests/bootstrap.php, pulling from
+	 * environment variables. These env vars on Travis ought to be scrubbed from log output,
+	 * at least according to Travis' docs.
+	 *
+	 * @return Array of arrays of parameters to be passed to $this->test_settings_no_exceptions()
+	 */
+	public function settingsGenerator() {
+		$api_urls = array(
+			'',
+			'https://api-sandbox.pmp.io',
+			'https://api.pmp.io',
+		);
+		$client_ids = array(
+			'',
+			getenv('PMP_CLIENT_ID'),
+		);
+		$client_secrets = array(
+			'',
+			getenv('PMP_CLIENT_SECRET'),
+		);
+		$use_api_notification = array(
+			'',
+			'on',
+		);
+
+		$output = array();
+
+		foreach ( $api_urls as $api_url ) {
+			foreach ( $client_ids as $client_id ) {
+				foreach ( $client_secrets as $client_secret ) {
+					foreach ( $use_api_notification as $use_api_notifications ) {
+						$output[] = array(
+							$api_url,
+							$client_id,
+							$client_secret,
+							$use_api_notifications,
+						);
+					}
+				}
+			}
+		}
+		return $output;
+	}
+
+	/**
+	 * Given a set of options, save them to the database, then go to the settings page.
+	 * Expect no unexpected exceptions.
+	 *
+	 * @dataProvider settingsGenerator
+	 * @param string $api_url The API URL
+	 * @param string $client_id The Client ID
+	 * @param string $client_secret The Client Secret
+	 * @param string $use_api_notifications Whether to use the notification API
+	 * @link https://github.com/npr/pmp-wordpress-plugin/pull/150#issuecomment-427087146
+	 */
+	public function test_settings_no_exceptions( $api_url, $client_id, $client_secret, $use_api_notifications ) {
+		delete_option( 'pmp_settings' );
+
+		$options = array();
+		// assemble the options
+		if ( ! empty( $api_url ) ) {
+			$options['pmp_api_url'] = $api_url;
+		}
+		if ( ! empty( $client_id ) ) {
+			$options['pmp_client_id'] = $client_id;
+		}
+		if ( ! empty( $client_secret ) ) {
+			$options['pmp_client_secret'] = $client_secret;
+		}
+		if ( ! empty( $api_url ) ) {
+			$options['pmp_api_url'] = $api_url;
+		}
+		update_option( 'pmp_settings', $options );
+
+		try {
+			$this->go_to( '/wp-admin/admin.php?page=pmp-options-menu' );
+		} catch ( Pmp\Sdk\Exception\AuthException $e ) {
+			$this->fail( sprintf(
+				'The settings page experienced an unexpected Pmp\Sdk\Exception\AuthException with the following options: %1$s',
+				var_export( $options, true ) // we're expecting that Travis will redact this log output where it contains secret environment variables: https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings
+			) );
+		}
+
+		$this->assertTrue( true, "No unexpected errors were found during this test pass." );
+	}
+}
