@@ -229,10 +229,12 @@ function pmp_settings_validate( $input ) {
 	 * It could be reduced further, but would lose readability and thinkability.
 	 */
 	if (
-		! isset ( $options['pmp_client_secret'] )
-		|| empty ( $options['pmp_client_secret'] )
+		! isset( $options['pmp_client_secret'] )
+		|| empty( $options['pmp_client_secret'] )
 	) {
-		$input['pmp_client_secret'] = $input['pmp_client_secret'];
+		if ( isset( $input['pmp_client_secret'] ) ) {
+			$input['pmp_client_secret'] = $input['pmp_client_secret'];
+		}
 	} elseif (
 		isset( $options['pmp_client_secret'] )
 		&& ! empty( $options['pmp_client_secret'] )
