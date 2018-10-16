@@ -30,8 +30,7 @@ class SDKWrapper {
 			$settings_array = get_option('pmp_settings');
 		}
 
-		if ( ! pmp_are_settings_valid( $settings_array ) )
-		) {
+		if ( ! pmp_are_settings_valid( $settings_array ) ) {
 			throw new Pmp\Sdk\Exception\AuthException( 'need to set the API URL, client ID, and/or client secret when constructing a new SDKWrapper' );
 		}
 
