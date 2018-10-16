@@ -377,17 +377,17 @@ function pmp_post_is_mine($post_id) {
 
 	// BACKWARDS COMPATIBILITY: set pmp_last_pushed from pmp_owner
 	$pmp_owner = get_post_meta($post_id, 'pmp_owner', true);
-  if (!empty($pmp_owner)) {
-  	delete_post_meta($post_id, 'pmp_owner');
-    if ($pmp_owner == pmp_get_my_guid()) {
-    	$date = get_post_meta($post_id, 'pmp_modified', true);
-    	$date = $date ? $date : date('c', time());
-      update_post_meta($post_id, 'pmp_last_pushed', $date);
-      return true;
-    }
-  }
+	if (!empty($pmp_owner)) {
+		delete_post_meta($post_id, 'pmp_owner');
+		if ($pmp_owner == pmp_get_my_guid()) {
+			$date = get_post_meta($post_id, 'pmp_modified', true);
+			$date = $date ? $date : date('c', time());
+			update_post_meta($post_id, 'pmp_last_pushed', $date);
+			return true;
+		}
+	}
 
-  return false;
+	return false;
 }
 
 /**
