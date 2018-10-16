@@ -12,7 +12,17 @@ function pmp_search() {
 	check_ajax_referer('pmp_ajax_nonce', 'security');
 
 	$options = get_option( 'pmp_settings' );
-	$sdk = new SDKWrapper( $options );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		header("HTTP/1.0 500 Internal Server Error");
+		print json_encode(array(
+			"message" => "Plugin must be configured before performing this query.",
+			"success" => false
+		));
+		wp_die();
+	}
+
 	$opts = array(
 		'profile' => 'story',
 		'limit' => 10
@@ -27,8 +37,9 @@ function pmp_search() {
 		$guid = $opts['guid'];
 		unset($opts['guid']);
 		$result = $sdk->query2json('fetchDoc', $guid, $opts);
-	} else
+	} else {
 		$result = $sdk->query2json('queryDocs', $opts);
+	}
 
 	if (!$result) {
 		header("HTTP/1.0 404 Not Found");
