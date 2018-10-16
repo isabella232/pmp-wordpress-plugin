@@ -280,17 +280,21 @@ function pmp_settings_validate( $input ) {
 		unset( $input['pmp_use_api_notifications'] );
 	}
 
+	// If enabling the API notifications anew, subscribe to the notificatons API
 	if ( ! empty( $input['pmp_use_api_notifications'] ) && ! isset( $options['pmp_use_api_notifications'] ) ) {
 		foreach ( pmp_get_topic_urls() as $topic_url ) {
-			$result = pmp_send_subscription_request( 'subscribe', $topic_url );
+			// use the new options to subscribe to the Notifications API
+			$result = pmp_send_subscription_request( 'subscribe', $topic_url, $input );
 			if ( true !== $result ) {
 				add_settings_error( 'pmp_settings_fields', 'pmp_notifications_subscribe_error', $result, 'error' );
 				$errors = true;
 			}
 		}
+	// If disabling the API notifications, unsubscribe from the notifications API
 	} elseif ( empty( $input['pmp_use_api_notifications'] ) && isset( $options['pmp_use_api_notifications'] ) ) {
 		foreach ( pmp_get_topic_urls() as $topic_url ) {
-			$result = pmp_send_subscription_request( 'unsubscribe', $topic_url );
+			// use the old options to unsubscribe from the Notifications API
+			$result = pmp_send_subscription_request( 'unsubscribe', $topic_url, $options );
 			if ( true !== $result ) {
 				add_settings_error( 'pmp_settings_fields', 'pmp_notifications_unsubscribe_error', $result, 'error' );
 				$errors = true;
