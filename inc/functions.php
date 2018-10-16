@@ -153,11 +153,7 @@ function pmp_get_pmp_attachments($parent_id) {
  */
 function pmp_verify_settings() {
 	$options = get_option( 'pmp_settings' );
-	return (
-		! empty( $options['pmp_api_url'] ) &&
-		isset( $options['pmp_client_id'] ) &&
-		isset( $options['pmp_client_secret'] )
-	);
+	return pmp_are_settings_valid( $options );
 }
 
 /**
