@@ -123,14 +123,15 @@ function pmp_client_secret_input() {
  * Static field for currently connected user
  *
  * @since 0.3
+ * @uses pmp_are_settings_valid
  */
 function pmp_user_title_input() {
 	$options = get_option( 'pmp_settings' );
-	if ( empty( $options['pmp_api_url'] ) || empty( $options['pmp_client_id'] ) || empty( $options['pmp_client_secret'] ) ) {
+	if ( ! pmp_are_settings_valid( $options ) ) {
 		echo '<p><em>Not connected</em></p>';
 	} else {
 		try {
-			$sdk = new SDKWrapper();
+			$sdk = new SDKWrapper( $options );
 			$me = $sdk->fetchUser( 'me' );
 			$title = $me->attributes->title;
 			$link = pmp_get_support_link( $me->attributes->guid );
