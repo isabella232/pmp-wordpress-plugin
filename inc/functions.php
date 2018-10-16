@@ -441,9 +441,11 @@ add_action('before_delete_post', 'pmp_cleanup_attachments');
 /**
  * Get the current user's PMP GUID
  *
+ * @param Array $options An array of PMP settings as saved in the object table, to be parsed by pmp_are_settings_valid()
+ * @uses pmp_are_settings_valid
  * @since 0.2
  */
-function pmp_get_my_guid() {
+function pmp_get_my_guid( $options = array() ) {
 	$pmp_my_guid_transient_key = 'pmp_my_guid';
 	$pmp_my_guid_transient = get_transient($pmp_my_guid_transient_key);
 
@@ -451,12 +453,19 @@ function pmp_get_my_guid() {
 		return $pmp_my_guid_transient;
 	}
 
-	$options = get_option( 'pmp_settings' );
+	// backwards compatibility: if $options is not set; try the database.
+	if ( empty( $options ) ) {
+		$options = get_option( 'pmp_settings' );
+	}
+
 	if ( pmp_are_settings_valid( $options ) ) {
 		$sdk = new SDKWrapper( $options );
 	} else {
-		pmp_debug( 'Settings array from options table is not valid for initializing the SDK; aborting.' );
-		return false; // get_transient can return false.
+		pmp_debug( 'Settings array from options table is not valid for initializing the SDK in pmp_get_my_guid(); aborting.' );
+		// this function returns a transient if operating normally;
+		// but a valid response from get_transient is `false`,
+		// so we return that in this error condition.
+		return false;
 	}
 
 	$me = $sdk->fetchUser( 'me' );
@@ -470,9 +479,12 @@ function pmp_get_my_guid() {
  * Update the transient that stores the current user's PMP GUID
  *
  * @since 0.2
+ * @param Array $options (optional) The array of settings that would be passed to pmp_are_settings_valid()
+ * @return Bool|Mixed The value of the GUID transient, or False on failure.
+ * @uses pmp_get_my_guid
  */
-function pmp_update_my_guid_transient() {
-	pmp_get_my_guid();
+function pmp_update_my_guid_transient( $options = array() ) {
+	return pmp_get_my_guid( $options );
 }
 
 /**

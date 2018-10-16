@@ -299,7 +299,7 @@ function pmp_settings_validate( $input ) {
 	}
 
 	if ( empty( $errors ) ) {
-		pmp_update_my_guid_transient();
+		pmp_update_my_guid_transient( $input );
 	}
 
 	return $input;
