@@ -456,7 +456,7 @@ function pmp_get_my_guid() {
 		$sdk = new SDKWrapper( $options );
 	} else {
 		pmp_debug( 'Settings array from options table is not valid for initializing the SDK; aborting.' );
-		return false;
+		return false; // get_transient can return false.
 	}
 
 	$me = $sdk->fetchUser( 'me' );

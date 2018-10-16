@@ -7,6 +7,9 @@
  */
 class SDKWrapper {
 
+	/**
+	 * @var Pmp\Sdk
+	 */
 	public $sdk;
 
 	/**
@@ -19,6 +22,7 @@ class SDKWrapper {
 	 * );
 	 *
 	 * @param Array $settings_array The array of settings.
+	 * @throws Pmp\Sdk\Exception\AuthException if not configured.
 	 */
 	public function __construct( $settings_array ) {
 		if (

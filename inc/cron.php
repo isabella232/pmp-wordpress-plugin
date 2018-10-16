@@ -32,6 +32,7 @@ function pmp_get_pmp_posts() {
  * the WP post differs from the PMP Doc. If it does differ, update the post in the WP database.
  *
  * @since 0.1
+ * @see pmp_hourly_cron
  */
 function pmp_get_updates() {
 	pmp_debug('========== pmp_get_updates ==========');

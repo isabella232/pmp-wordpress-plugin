@@ -308,8 +308,9 @@ function pmp_save_query() {
 			"success" => true,
 			"search_id" => $search_id
 		));
-	} else
+	} else {
 		print json_encode(array("success" => false));
+	}
 
 	wp_die();
 }
@@ -362,7 +363,10 @@ function pmp_get_select_options() {
 }
 add_action('wp_ajax_pmp_get_select_options', 'pmp_get_select_options');
 
-/* Helper functions */
+/*
+ * Helper functions
+ */
+
 function _pmp_create_doc($type, $data) {
 	$options = get_option( 'pmp_settings' );
 	if ( pmp_are_settings_valid( $options ) ) {
@@ -453,6 +457,7 @@ function _pmp_ajax_create_post($is_draft=false) {
  * @param $type (string) The document option to create a select menu for
  * (i.e., 'group', 'property' or 'series').
  * @since 0.3
+ * @return Array The data structure.
  */
 function _pmp_select_for_post($post, $type) {
 	$ret = array(
