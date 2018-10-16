@@ -177,9 +177,12 @@ register_deactivation_hook(__FILE__, 'pmp_remove_cron_on_deactivation');
  */
 function pmp_hourly_cron() {
 	$options = get_option('pmp_settings');
-	if (!isset($options['pmp_use_api_notifications']) || $options['pmp_use_api_notifications'] !== 'on')
-		pmp_get_updates();
+	if ( pmp_are_settings_valid( $options ) ) {
+		if ( ! isset( $options['pmp_use_api_notifications'] ) || $options['pmp_use_api_notifications'] !== 'on' ) {
+			pmp_get_updates();
+		}
 
-	pmp_import_for_saved_queries();
+		pmp_import_for_saved_queries();
+	}
 }
 add_action('pmp_hourly_cron', 'pmp_hourly_cron');
