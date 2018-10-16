@@ -102,11 +102,21 @@ function pmp_create_group() {
 	$group = json_decode(stripslashes($_POST['group']));
 	$doc = _pmp_create_doc('group', $group);
 
-	print json_encode(array(
-		"success" => true,
-		"data" => SDKWrapper::prepFetchData($doc)
-	));
-	wp_die();
+	if ( false === $doc ) {
+		print json_encode(array(
+			"success" => false,
+			"data" => false,
+			"message" => "Plugin must be configured before performing this query.",
+		));
+		wp_die();
+	} else {
+		print json_encode(array(
+			"success" => true,
+			"data" => SDKWrapper::prepFetchData($doc)
+		));
+		wp_die();
+	}
+
 }
 add_action('wp_ajax_pmp_create_group', 'pmp_create_group');
 
