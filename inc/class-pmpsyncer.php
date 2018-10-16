@@ -1,5 +1,4 @@
 <?php
-
 /**
  * A class for syncing PMP-documents to WP-posts
  *
