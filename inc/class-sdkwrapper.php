@@ -24,12 +24,13 @@ class SDKWrapper {
 	 * @param Array $settings_array The array of settings.
 	 * @throws Pmp\Sdk\Exception\AuthException if not configured.
 	 */
-	public function __construct( $settings_array ) {
-		if (
-			empty( $settings_array )
-			|| ! isset( $settings_array['pmp_api_url'] )
-			|| ! isset( $settings_array['pmp_client_id'] )
-			|| ! isset( $settings_array['pmp_client_secret'] )
+	public function __construct( $settings_array = array() ) {
+		// backwards compatibility: try to fetch settings from database if not explicitly passed
+		if ( empty( $settings_array ) ) {
+			$settings_array = get_option('pmp_settings');
+		}
+
+		if ( ! pmp_are_settings_valid( $settings_array ) )
 		) {
 			throw new Pmp\Sdk\Exception\AuthException( 'need to set the API URL, client ID, and/or client secret when constructing a new SDKWrapper' );
 		}
