@@ -349,7 +349,12 @@ function pmp_get_select_options() {
 	$type = $data['type'];
 
 	$ret = _pmp_select_for_post($post, $type);
-	print json_encode(array_merge(array("success" => true), $ret));
+
+	if ( empty( $ret ) ) {
+		print json_encode(array_merge(array("success" => false), $ret));
+	} else {
+		print json_encode(array_merge(array("success" => true), $ret));
+	}
 
 	wp_die();
 }
@@ -441,7 +446,12 @@ function _pmp_select_for_post($post, $type) {
 	);
 
 	$options = get_option( 'pmp_settings' );
-	$sdk = new SDKWrapper( $options );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		return array();
+	}
+
 	$pmp_things = $sdk->query2json('queryDocs', array(
 		'profile' => $type,
 		'writeable' => 'true',
