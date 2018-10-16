@@ -61,6 +61,7 @@ add_action('wp_ajax_pmp_search', 'pmp_search');
  * Ajax function to create a draft post based on PMP story
  *
  * @since 0.1
+ * @see _pmp_ajax_create_post
  */
 function pmp_draft_post() {
 	check_ajax_referer('pmp_ajax_nonce', 'security');
@@ -68,7 +69,7 @@ function pmp_draft_post() {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 	}
 	else {
-		print json_encode(_pmp_ajax_create_post(true));
+		print json_encode(_pmp_ajax_create_post(true)); // true=draft
 		wp_die();
 	}
 }
@@ -78,6 +79,7 @@ add_action('wp_ajax_pmp_draft_post', 'pmp_draft_post');
  * Ajax function to publish a post based on PMP story
  *
  * @since 0.1
+ * @see _pmp_ajax_create_post
  */
 function pmp_publish_post() {
 	check_ajax_referer('pmp_ajax_nonce', 'security');
@@ -397,9 +399,22 @@ function _pmp_modify_doc($data) {
 	return $doc;
 }
 
+/**
+ * Create a post from a PMP API story
+ *
+ * @param bool $is_draft Whether the created post should be a draft or not.
+ * @return Array An array of data that will be JSON encoded.
+ */
 function _pmp_ajax_create_post($is_draft=false) {
 	$options = get_option( 'pmp_settings' );
-	$sdk = new SDKWrapper( $options );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		return array(
+			"message" => "Plugin must be configured before performing this query.",
+			"success" => false
+		);
+	}
 
 	// make sure we don't search for a blank string
 	$guid = empty($_POST['pmp_guid']) ? 'nothing' : $_POST['pmp_guid'];
