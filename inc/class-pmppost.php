@@ -53,18 +53,26 @@ class PmpPost extends PmpSyncer {
   /**
    * Init when you only know the WP post
    *
+   * This function does not check whether the $options from the options table,
+   * used for constructing the SDKWrapper, are valid, because the lone caller
+   * of this function, pmp_get_updates() is only called by pmp_hourly_cron(),
+   * which checks wether pmp_are_settings_valid().
+   *
    * @param $wp_post - a WP_Post instance
    * @return a new PmpSyncer
+   * @see pmp_get_updates
    */
   public static function fromPost(WP_Post $wp_post) {
-    $options = get_option( 'pmp_settings' );
-    $sdk = new SDKWrapper( $options );
     $guid = get_post_meta($wp_post->ID, 'pmp_guid', true);
-    if ($guid) {
+
+    if ( $guid ) {
+      $options = get_option( 'pmp_settings' );
+      $sdk = new SDKWrapper( $options );
+
       $doc = $sdk->fetchDoc($guid);
+
       return new self($doc, $wp_post); // doc might be null
-    }
-    else {
+    } else {
       return new self(null, $wp_post);
     }
   }
