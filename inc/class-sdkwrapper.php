@@ -9,21 +9,31 @@ class SDKWrapper {
 
 	public $sdk;
 
-	public function __construct() {
-		$settings = get_option('pmp_settings');
-
+	/**
+	 * Constructor accepts as an argument an array of arguments needed to instantiate the SDK
+	 *
+	 * array(
+	 *     'pmp_api_url' => 'https://api.pmp.io/',
+	 *     'pmp_client_id' => '',
+	 *     'pmp_client_secret' => '',
+	 * );
+	 *
+	 * @param Array $settings_array The array of settings.
+	 */
+	public function __construct( $settings_array ) {
 		if (
-			! isset( $settings['pmp_api_url'] )
-			|| ! isset( $settings['pmp_client_id'] )
-			|| ! isset( $settings['pmp_client_secret'] )
+			empty( $settings_array )
+			|| ! isset( $settings_array['pmp_api_url'] )
+			|| ! isset( $settings_array['pmp_client_id'] )
+			|| ! isset( $settings_array['pmp_client_secret'] )
 		) {
-			throw new Pmp\Sdk\Exception\AuthException( 'need to set the API URL, client ID, or client secret' );
+			throw new Pmp\Sdk\Exception\AuthException( 'need to set the API URL, client ID, and/or client secret when constructing a new SDKWrapper' );
 		}
 
 		$this->sdk = new \Pmp\Sdk(
-			$settings['pmp_api_url'],
-			$settings['pmp_client_id'],
-			$settings['pmp_client_secret']
+			$settings_array['pmp_api_url'],
+			$settings_array['pmp_client_id'],
+			$settings_array['pmp_client_secret']
 		);
 	}
 
