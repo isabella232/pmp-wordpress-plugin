@@ -176,7 +176,17 @@ function pmp_save_users() {
 	$group_data = json_decode(stripslashes($_POST['data']));
 
 	$options = get_option( 'pmp_settings' );
-	$sdk = new SDKWrapper( $options );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		header("HTTP/1.0 500 Internal Server Error");
+		print json_encode(array(
+			"message" => "Plugin must be configured before performing this query.",
+			"success" => false
+		));
+		wp_die();
+	}
+
 	$group = $sdk->fetchDoc($group_data->collection_guid);
 
 	if (!empty($group_data->items_guids)) {
