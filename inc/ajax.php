@@ -181,7 +181,6 @@ function pmp_save_users() {
 	if ( pmp_are_settings_valid( $options ) ) {
 		$sdk = new SDKWrapper( $options );
 	} else {
-		header("HTTP/1.0 500 Internal Server Error");
 		print json_encode(array(
 			"message" => "Plugin must be configured before performing this query.",
 			"success" => false
