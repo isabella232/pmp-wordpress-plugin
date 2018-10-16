@@ -303,3 +303,30 @@ function pmp_settings_validate( $input ) {
 
 	return $input;
 }
+
+/**
+ * Check whether a given settings array is valid for the purposes of initializing the SDK
+ *
+ * This is a subset of pmp_settings_validate()
+ *
+ * @param Array $settings The settings to be checked
+ * @return Boolean Whether or not the settings is valid.
+ */
+function pmp_are_settings_valid( $settings_array ) {
+	// If things are not set, false.
+	if (
+		empty( $settings_array )
+		|| ! isset( $settings_array['pmp_api_url'] )
+		|| ! isset( $settings_array['pmp_client_id'] )
+		|| ! isset( $settings_array['pmp_client_secret'] )
+	) {
+		return false;
+	}
+
+	// If the API URL is not a valid URL, false.
+	if ( ! empty( $settings_array['pmp_api_url'] ) && false === filter_var( $settings_array['pmp_api_url'], FILTER_VALIDATE_URL ) ) {
+		return false;
+	}
+
+	return true;
+}

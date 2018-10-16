@@ -57,7 +57,8 @@ class PmpPost extends PmpSyncer {
    * @return a new PmpSyncer
    */
   public static function fromPost(WP_Post $wp_post) {
-    $sdk = new SDKWrapper();
+    $options = get_option( 'pmp_settings' );
+    $sdk = new SDKWrapper( $options );
     $guid = get_post_meta($wp_post->ID, 'pmp_guid', true);
     if ($guid) {
       $doc = $sdk->fetchDoc($guid);

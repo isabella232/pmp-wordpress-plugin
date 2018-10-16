@@ -236,7 +236,8 @@ abstract class PmpSyncer {
    * @return boolean success
    */
   protected function new_doc() {
-    $sdk = new SDKWrapper();
+    $options = get_option( 'pmp_settings' );
+    $sdk = new SDKWrapper( $options );
     $this->doc = $sdk->newDoc('base', array(
       'attributes' => array(
         'title'     => $this->post->post_title,

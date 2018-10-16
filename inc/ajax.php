@@ -11,7 +11,8 @@ include_once __DIR__ . '/class-pmppost.php';
 function pmp_search() {
 	check_ajax_referer('pmp_ajax_nonce', 'security');
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	$sdk = new SDKWrapper( $options );
 	$opts = array(
 		'profile' => 'story',
 		'limit' => 10
@@ -144,7 +145,8 @@ function pmp_save_users() {
 
 	$group_data = json_decode(stripslashes($_POST['data']));
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	$sdk = new SDKWrapper( $options );
 	$group = $sdk->fetchDoc($group_data->collection_guid);
 
 	if (!empty($group_data->items_guids)) {
@@ -297,7 +299,8 @@ add_action('wp_ajax_pmp_get_select_options', 'pmp_get_select_options');
 
 /* Helper functions */
 function _pmp_create_doc($type, $data) {
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	$sdk = new SDKWrapper( $options );
 
 	if (!empty($data->attributes->tags))
 		$data->attributes->tags = SDKWrapper::commas2array($data->attributes->tags);
@@ -309,7 +312,8 @@ function _pmp_create_doc($type, $data) {
 }
 
 function _pmp_modify_doc($data) {
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	$sdk = new SDKWrapper( $options );
 	$doc = $sdk->fetchDoc($data->attributes->guid);
 
 	if (!empty($data->attributes->tags))
@@ -322,7 +326,8 @@ function _pmp_modify_doc($data) {
 }
 
 function _pmp_ajax_create_post($is_draft=false) {
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	$sdk = new SDKWrapper( $options );
 
 	// make sure we don't search for a blank string
 	$guid = empty($_POST['pmp_guid']) ? 'nothing' : $_POST['pmp_guid'];
@@ -368,7 +373,8 @@ function _pmp_select_for_post($post, $type) {
 		'type' => $type
 	);
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	$sdk = new SDKWrapper( $options );
 	$pmp_things = $sdk->query2json('queryDocs', array(
 		'profile' => $type,
 		'writeable' => 'true',

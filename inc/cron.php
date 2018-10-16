@@ -49,7 +49,14 @@ function pmp_get_updates() {
  */
 function pmp_import_for_saved_queries() {
 	$search_queries = pmp_get_saved_search_queries();
-	$sdk = new SDKWrapper();
+
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		pmp_debug( 'Settings array from options table is not valid for initializing the SDK; aborting.' );
+		return false;
+	}
 
 	foreach ($search_queries as $id => $query_data) {
 		if ($query_data->options->query_auto_create == 'off')

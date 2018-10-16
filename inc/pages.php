@@ -69,7 +69,17 @@ function pmp_groups_page() {
 	if (isset($_POST['pmp-unset-default-group']))
 		delete_option('pmp_default_group');
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		pmp_debug( 'Settings array from options table is not valid for initializing the SDK; aborting.' );
+
+		// @todo: template for this page when settings are not saved
+
+		return false;
+	}
+
 	$pmp_users = $sdk->query2json('queryDocs', array(
 		'profile' => 'user',
 		'limit' => 9999
@@ -111,7 +121,17 @@ function pmp_collections_page() {
 	if (isset($_POST['pmp-unset-default-' . $profile]))
 		delete_option('pmp_default_' . $profile);
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		pmp_debug( 'Settings array from options table is not valid for initializing the SDK; aborting.' );
+
+		// @todo: template for this page when there are no options.
+
+		return false;
+	}
+
 	$pmp_collection = $sdk->query2json('queryDocs', array(
 		'profile' => $profile,
 		'writeable' => 'true',
