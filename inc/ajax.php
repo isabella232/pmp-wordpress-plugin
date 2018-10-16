@@ -221,11 +221,20 @@ function pmp_create_collection() {
 	$collection = json_decode(stripslashes($_POST['collection']));
 	$doc = _pmp_create_doc($_POST['profile'], $collection);
 
-	print json_encode(array(
-		"success" => true,
-		"data" => SDKWrapper::prepFetchData($doc)
-	));
-	wp_die();
+	if ( false === $doc ) {
+		print json_encode(array(
+			"success" => false,
+			"data" => false,
+			"message" => "The collection could not be created.",
+		));
+		wp_die();
+	} else {
+		print json_encode(array(
+			"success" => true,
+			"data" => SDKWrapper::prepFetchData($doc)
+		));
+		wp_die();
+	}
 }
 add_action('wp_ajax_pmp_create_collection', 'pmp_create_collection');
 
@@ -240,11 +249,20 @@ function pmp_modify_collection() {
 	$collection = json_decode(stripslashes($_POST['collection']));
 	$doc = _pmp_modify_doc($collection);
 
-	print json_encode(array(
-		"success" => true,
-		"data" => SDKWrapper::prepFetchData($doc)
-	));
-	wp_die();
+	if ( false === $doc ) {
+		print json_encode(array(
+			"success" => false,
+			"data" => false,
+			"message" => "The collection could not be modified.",
+		));
+		wp_die();
+	} else {
+		print json_encode(array(
+			"success" => true,
+			"data" => SDKWrapper::prepFetchData($doc)
+		));
+		wp_die();
+	}
 }
 add_action('wp_ajax_pmp_modify_collection', 'pmp_modify_collection');
 
@@ -340,7 +358,11 @@ add_action('wp_ajax_pmp_get_select_options', 'pmp_get_select_options');
 /* Helper functions */
 function _pmp_create_doc($type, $data) {
 	$options = get_option( 'pmp_settings' );
-	$sdk = new SDKWrapper( $options );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		return false;
+	}
 
 	if (!empty($data->attributes->tags))
 		$data->attributes->tags = SDKWrapper::commas2array($data->attributes->tags);
@@ -353,7 +375,12 @@ function _pmp_create_doc($type, $data) {
 
 function _pmp_modify_doc($data) {
 	$options = get_option( 'pmp_settings' );
-	$sdk = new SDKWrapper( $options );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		return false;
+	}
+
 	$doc = $sdk->fetchDoc($data->attributes->guid);
 
 	if (!empty($data->attributes->tags))
