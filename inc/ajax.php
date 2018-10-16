@@ -131,11 +131,20 @@ function pmp_modify_group() {
 	$group = json_decode(stripslashes($_POST['group']));
 	$doc = _pmp_modify_doc($group);
 
-	print json_encode(array(
-		"success" => true,
-		"data" => SDKWrapper::prepFetchData($doc)
-	));
-	wp_die();
+	if ( false === $doc ) {
+		print json_encode(array(
+			"success" => false,
+			"data" => false,
+			"message" => "The document could not be modified",
+		));
+		wp_die();
+	} else {
+		print json_encode(array(
+			"success" => true,
+			"data" => SDKWrapper::prepFetchData($doc)
+		));
+		wp_die();
+	}
 }
 add_action('wp_ajax_pmp_modify_group', 'pmp_modify_group');
 
