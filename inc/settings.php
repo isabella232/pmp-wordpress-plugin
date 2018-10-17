@@ -35,10 +35,19 @@ add_action( 'admin_init', 'pmp_admin_init' );
 function pmp_use_api_notifications_input() {
 	$options = get_option( 'pmp_settings' );
 	$setting = ( isset( $options['pmp_use_api_notifications'] ) ) ? $options['pmp_use_api_notifications'] : false;
+
+	if ( pmp_are_settings_valid( $options ) ) {
+		$disabled = ' ';
+	} else {
+		$disabled = ' disabled ';
+	}
+
 	?>
 		<input id="pmp_use_api_notifications" type="checkbox"
 			name="pmp_settings[pmp_use_api_notifications]"
-			<?php echo checked( $setting, 'on' ); ?>>Enable</input>
+			<?php echo checked( $setting, 'on' ); ?>
+			<?php echo $disabled; ?>
+			>Enable</input>
 		<p><em>Enabling this option allows the PMP API to push to your site as new story, audio, image, etc. updates become available.<em></p>
 		<p><em>This may help improve performance of your site, especially if you have a large number of imported posts.</em></p>
 <?php

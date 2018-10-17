@@ -15,3 +15,5 @@ To use the PMP WordPress plugin, you'll need to specify a **Client ID** and **Cl
 ![Settings](/assets/img/largo-PMP-settings-blank.png)
 
 If you don't yet have a Client ID and Client Secret, you'll probably need to [request an account with the PMP](https://support.pmp.io/register).
+
+The option to enable the PMP API to send content updates is disabled until you have saved API credentials for the plugin.
