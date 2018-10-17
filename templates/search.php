@@ -73,11 +73,11 @@
 		</form>
 
 		<div id="pmp-search-results"></div>
-	<?php } else { ?>
-		<div id="pmp-incomplete-settings-notice">
-			Please specify an <strong>API URL<strong>, <strong>Client ID</strong>, <strong>Client Secret</strong> via the <a href="<?php echo admin_url('admin.php?page=pmp-options-menu'); ?>">PMP settings page</a>.
-		</div>
-	<?php } ?>
+	<?php
+		} else {
+			pmp_render_template( 'unconfigured.php' );
+		}
+	?>
 </div>
 
 <script type="text/template" id="pmp-search-result-tmpl">

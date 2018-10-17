@@ -54,7 +54,11 @@ function pmp_manage_saved_searches_page() {
 		'searches' => pmp_get_saved_search_queries()
 	);
 
-	pmp_render_template('saved_searches.php', $context);
+	if ( pmp_verify_settings() ) {
+		pmp_render_template('saved_searches.php', $context);
+	} else {
+		pmp_render_template( 'unconfigured.php', array( 'title' => 'Search the Platform' ) );
+	}
 }
 
 /**
@@ -75,7 +79,7 @@ function pmp_groups_page() {
 	} else {
 		pmp_debug( 'Settings array from options table is not valid for initializing the SDK; aborting.' );
 
-		// @todo: template for this page when settings are not saved
+		pmp_render_template( 'unconfigured.php', array( 'title' => 'PMP Groups &amp; Permissions' ) );
 
 		return false;
 	}
@@ -127,7 +131,7 @@ function pmp_collections_page() {
 	} else {
 		pmp_debug( 'Settings array from options table is not valid for initializing the SDK; aborting.' );
 
-		// @todo: template for this page when there are no options.
+		pmp_render_template( 'unconfigured.php', array( 'title' => 'PMP ' . $name ) );
 
 		return false;
 	}
