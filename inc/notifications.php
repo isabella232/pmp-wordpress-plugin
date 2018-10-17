@@ -73,13 +73,15 @@ add_action('template_redirect', 'pmp_notifications_template_redirect');
  * the options table, this funciton can only be used when options have
  * been saved to the options table.
  *
- * @param $mode string either 'subscribe' or 'unsubscribe'
+ * @param String $mode either 'subscribe' or 'unsubscribe'
+ * @pram String $topic_url That which to subscribe to
+ * @param Array $settings (optional) The settings array to be passed to pmp_are_settings_valid
  * @return boolean|string true on success, or a string error message
  * @since 0.3
  * @uses pmp_post_subscription_data
  */
-function pmp_send_subscription_request($mode='subscribe', $topic_url) {
-	$ret = pmp_post_subscription_data($mode, $topic_url);
+function pmp_send_subscription_request( $mode='subscribe', $topic_url, $settings = array() ) {
+	$ret = pmp_post_subscription_data( $mode, $topic_url, $settings );
 
 	if ( is_wp_error( $ret ) ) {
 		$return = array();
@@ -117,7 +119,7 @@ function pmp_send_subscription_request($mode='subscribe', $topic_url) {
  * @param Array $settings (optional) The settings array to be passed to pmp_are_settings_valid
  * @return WP_Error|Array a WP_Error if the settings aren't right; or the results of a wp_remote_get call: Array or WP_Error.
  */
-function pmp_post_subscription_data($mode, $topic_url, $settings = array() ) {
+function pmp_post_subscription_data( $mode, $topic_url, $settings = array() ) {
 	if ( empty( $settings ) ) {
 		$settings = get_option('pmp_settings');
 	}
