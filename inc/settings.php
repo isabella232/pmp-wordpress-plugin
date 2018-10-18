@@ -325,7 +325,7 @@ function pmp_settings_validate( $input ) {
  *
  * @param Array $settings The settings to be checked
  * @return Boolean Whether or not the settings is valid.
- * @since 0.2.12
+ * @since 0.2.11
  * @link https://github.com/npr/pmp-wordpress-plugin/issues/151
  */
 function pmp_are_settings_valid( $settings_array ) {

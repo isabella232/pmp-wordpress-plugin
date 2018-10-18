@@ -1,5 +1,5 @@
 === Public Media Platform ===
-Contributors: publicmediaplatform, inn_nerds
+Contributors: publicmediaplatform, innlabs, nprds
 Tags: pmp,pubmedia,publicmediaplatform,apm,npr,pri,prx,pbs,media,news
 Requires at least: 4.1
 Tested up to: 4.9
@@ -16,7 +16,7 @@ The [Public Media Platform](http://publicmediaplatform.org) is a cross-media dis
 
 The PMP was founded by a collaboration of APM, NPR, PBS, PRI and PRX, with the goal of bringing public media content to a wider audience.  It contains more than 300K pieces of digital content from our founding partners, and is growing every day.  For more information on what's available, feel free to [search the PMP](https://support.pmp.io/search?profile=story&has=image).
 
-Built by the [INN Nerds](http://nerds.inn.org/).
+Built by [INN Labs](https://labs.inn.org/).
 
 = Current plugin features: =
 
@@ -63,15 +63,19 @@ See the [documentation on Github](https://github.com/publicmediaplatform/pmp-wor
 
 - Adds support for PHP 7.
 - Removes support for PHP versions before 5.5, and sets a `Requires PHP: 5.5` flag in `readme.txt`.
+- Add support for WordPress versions up to 4.9.
+- Drops support for WordPress versions before 4.1.
 - Updates to [PMP PHP SDK version 2.0.2](https://github.com/npr/pmp-php-sdk/releases/tag/v2.0.2). (Pull request [#143](https://github.com/npr/pmp-wordpress-plugin/pull/143) for issue [#142](https://github.com/npr/pmp-wordpress-plugin/issues/142)) and [#145](https://github.com/npr/pmp-wordpress-plugin/issues/145). Changes affecting this plugin are as follows:
 	- Upgrades to Guzzle 6
 	- Adds support for PHP 7.0 and later
 	- Removes support for PHP versions before 5.5
 	- Provides a new-and-updated PHAR file to bundle in this plugin
+- Allows sites to unset credentials in the plugin admin. (Pull request [#146](https://github.com/npr/pmp-wordpress-plugin/pull/146) for issue [#130](https://github.com/npr/pmp-wordpress-plugin/issues/130).)
 - For PHP 7 compatibility, changes how the `PMP_NOTIFICATIONS_SECRET` constant is defined in order to prevent an "invalid salt" error causing white-screen errors. (Pull request [#144](https://github.com/npr/pmp-wordpress-plugin/pull/144) for [issue #133](https://github.com/npr/pmp-wordpress-plugin/issues/133))
-- Catches a Guzzle runtime exception that prevents the plugin from working properly, and warn users about the cause. ([#134](https://github.com/npr/pmp-wordpress-plugin/pull/134))
-- Changes the default environment of the plugin to the sandbox environment: new installations of the plugin will not automatically use production credentials ([#132](https://github.com/npr/pmp-wordpress-plugin/pull/132))
-- Improved test coverage. ([#131](https://github.com/npr/pmp-wordpress-plugin/pull/131))
+- Catches a Guzzle runtime exception that prevents the plugin from working properly, and warn users about the cause. ([#134](https://github.com/npr/pmp-wordpress-plugin/pull/134)).
+- Changes the default environment of the plugin to the sandbox environment: new installations of the plugin will not automatically use production credentials but must be configured to. ([#132](https://github.com/npr/pmp-wordpress-plugin/pull/132)).
+- Improved test coverage. (Pull request [#131](https://github.com/npr/pmp-wordpress-plugin/pull/131)).
+- Improved documentation for installation through channels other than WordPress.org.
 
 = 0.2.10 =
 
