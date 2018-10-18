@@ -7,7 +7,7 @@ Use this plugin to integrate the [Public Media Platform](http://publicmediaplatf
 
 Also see this project in the [official Wordpress plugin directory](https://wordpress.org/plugins/public-media-platform/).
 
-Built by the [INN Nerds](http://nerds.inn.org/).
+Built by [INN Labs](https://labs.inn.org/).
 
 ## Table of contents
 

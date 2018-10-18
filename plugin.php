@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Public Media Platform
- * Plugin URI: https://github.com/publicmediaplatform/pmp-wordpress
+ * Plugin URI: https://wordpress.org/plugins/public-media-platform/
  * Description: Integrate your site's content with the <a href="https://support.pmp.io" target="_blank">Public Media Platform</a>.
- * Author: the PMP and INN nerds
+ * Author: NPR and INN Labs
  * Version: 0.2.11
- * Author URI: https://github.com/publicmediaplatform/pmp-wordpress
+ * Author URI: https://github.com/npr/pmp-wordpress-plugin
  * License: MIT
  * Text Domain: pmp
  */

@@ -1,5 +1,5 @@
 === Public Media Platform ===
-Contributors: publicmediaplatform, inn_nerds
+Contributors: publicmediaplatform, innlabs
 Tags: pmp,pubmedia,publicmediaplatform,apm,npr,pri,prx,pbs,media,news
 Requires at least: 4.1
 Tested up to: 4.9
@@ -16,7 +16,7 @@ The [Public Media Platform](http://publicmediaplatform.org) is a cross-media dis
 
 The PMP was founded by a collaboration of APM, NPR, PBS, PRI and PRX, with the goal of bringing public media content to a wider audience.  It contains more than 300K pieces of digital content from our founding partners, and is growing every day.  For more information on what's available, feel free to [search the PMP](https://support.pmp.io/search?profile=story&has=image).
 
-Built by the [INN Nerds](http://nerds.inn.org/).
+Built by [INN Labs](https://labs.inn.org/).
 
 = Current plugin features: =
 
