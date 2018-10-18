@@ -9,7 +9,7 @@ class TestSDKWrapper extends WP_UnitTestCase {
 		if (empty($settings['pmp_api_url']) || empty($settings['pmp_client_id']) || empty($settings['pmp_client_secret']))
 			$this->sdk_wrapper = false;
 		else {
-			$this->sdk_wrapper = new SDKWrapper();
+			$this->sdk_wrapper = new SDKWrapper( $settings );
 
 			// A test query that's all but guaranteed to return at least one result.
 			$this->query = array(

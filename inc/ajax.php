@@ -11,7 +11,18 @@ include_once __DIR__ . '/class-pmppost.php';
 function pmp_search() {
 	check_ajax_referer('pmp_ajax_nonce', 'security');
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		header("HTTP/1.0 500 Internal Server Error");
+		print json_encode(array(
+			"message" => "Plugin must be configured before performing this query.",
+			"success" => false
+		));
+		wp_die();
+	}
+
 	$opts = array(
 		'profile' => 'story',
 		'limit' => 10
@@ -26,8 +37,9 @@ function pmp_search() {
 		$guid = $opts['guid'];
 		unset($opts['guid']);
 		$result = $sdk->query2json('fetchDoc', $guid, $opts);
-	} else
+	} else {
 		$result = $sdk->query2json('queryDocs', $opts);
+	}
 
 	if (!$result) {
 		header("HTTP/1.0 404 Not Found");
@@ -49,6 +61,7 @@ add_action('wp_ajax_pmp_search', 'pmp_search');
  * Ajax function to create a draft post based on PMP story
  *
  * @since 0.1
+ * @see _pmp_ajax_create_post
  */
 function pmp_draft_post() {
 	check_ajax_referer('pmp_ajax_nonce', 'security');
@@ -56,7 +69,7 @@ function pmp_draft_post() {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 	}
 	else {
-		print json_encode(_pmp_ajax_create_post(true));
+		print json_encode(_pmp_ajax_create_post(true)); // true=draft
 		wp_die();
 	}
 }
@@ -66,6 +79,7 @@ add_action('wp_ajax_pmp_draft_post', 'pmp_draft_post');
  * Ajax function to publish a post based on PMP story
  *
  * @since 0.1
+ * @see _pmp_ajax_create_post
  */
 function pmp_publish_post() {
 	check_ajax_referer('pmp_ajax_nonce', 'security');
@@ -90,11 +104,21 @@ function pmp_create_group() {
 	$group = json_decode(stripslashes($_POST['group']));
 	$doc = _pmp_create_doc('group', $group);
 
-	print json_encode(array(
-		"success" => true,
-		"data" => SDKWrapper::prepFetchData($doc)
-	));
-	wp_die();
+	if ( false === $doc ) {
+		print json_encode(array(
+			"success" => false,
+			"data" => false,
+			"message" => "Plugin must be configured before performing this query.",
+		));
+		wp_die();
+	} else {
+		print json_encode(array(
+			"success" => true,
+			"data" => SDKWrapper::prepFetchData($doc)
+		));
+		wp_die();
+	}
+
 }
 add_action('wp_ajax_pmp_create_group', 'pmp_create_group');
 
@@ -109,11 +133,20 @@ function pmp_modify_group() {
 	$group = json_decode(stripslashes($_POST['group']));
 	$doc = _pmp_modify_doc($group);
 
-	print json_encode(array(
-		"success" => true,
-		"data" => SDKWrapper::prepFetchData($doc)
-	));
-	wp_die();
+	if ( false === $doc ) {
+		print json_encode(array(
+			"success" => false,
+			"data" => false,
+			"message" => "The document could not be modified",
+		));
+		wp_die();
+	} else {
+		print json_encode(array(
+			"success" => true,
+			"data" => SDKWrapper::prepFetchData($doc)
+		));
+		wp_die();
+	}
 }
 add_action('wp_ajax_pmp_modify_group', 'pmp_modify_group');
 
@@ -144,7 +177,17 @@ function pmp_save_users() {
 
 	$group_data = json_decode(stripslashes($_POST['data']));
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		print json_encode(array(
+			"message" => "Plugin must be configured before performing this query.",
+			"success" => false
+		));
+		wp_die();
+	}
+
 	$group = $sdk->fetchDoc($group_data->collection_guid);
 
 	if (!empty($group_data->items_guids)) {
@@ -179,11 +222,20 @@ function pmp_create_collection() {
 	$collection = json_decode(stripslashes($_POST['collection']));
 	$doc = _pmp_create_doc($_POST['profile'], $collection);
 
-	print json_encode(array(
-		"success" => true,
-		"data" => SDKWrapper::prepFetchData($doc)
-	));
-	wp_die();
+	if ( false === $doc ) {
+		print json_encode(array(
+			"success" => false,
+			"data" => false,
+			"message" => "The collection could not be created.",
+		));
+		wp_die();
+	} else {
+		print json_encode(array(
+			"success" => true,
+			"data" => SDKWrapper::prepFetchData($doc)
+		));
+		wp_die();
+	}
 }
 add_action('wp_ajax_pmp_create_collection', 'pmp_create_collection');
 
@@ -198,11 +250,20 @@ function pmp_modify_collection() {
 	$collection = json_decode(stripslashes($_POST['collection']));
 	$doc = _pmp_modify_doc($collection);
 
-	print json_encode(array(
-		"success" => true,
-		"data" => SDKWrapper::prepFetchData($doc)
-	));
-	wp_die();
+	if ( false === $doc ) {
+		print json_encode(array(
+			"success" => false,
+			"data" => false,
+			"message" => "The collection could not be modified.",
+		));
+		wp_die();
+	} else {
+		print json_encode(array(
+			"success" => true,
+			"data" => SDKWrapper::prepFetchData($doc)
+		));
+		wp_die();
+	}
 }
 add_action('wp_ajax_pmp_modify_collection', 'pmp_modify_collection');
 
@@ -246,8 +307,9 @@ function pmp_save_query() {
 			"success" => true,
 			"search_id" => $search_id
 		));
-	} else
+	} else {
 		print json_encode(array("success" => false));
+	}
 
 	wp_die();
 }
@@ -289,15 +351,28 @@ function pmp_get_select_options() {
 	$type = $data['type'];
 
 	$ret = _pmp_select_for_post($post, $type);
-	print json_encode(array_merge(array("success" => true), $ret));
+
+	if ( empty( $ret ) ) {
+		print json_encode(array_merge(array("success" => false), $ret));
+	} else {
+		print json_encode(array_merge(array("success" => true), $ret));
+	}
 
 	wp_die();
 }
 add_action('wp_ajax_pmp_get_select_options', 'pmp_get_select_options');
 
-/* Helper functions */
+/*
+ * Helper functions
+ */
+
 function _pmp_create_doc($type, $data) {
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		return false;
+	}
 
 	if (!empty($data->attributes->tags))
 		$data->attributes->tags = SDKWrapper::commas2array($data->attributes->tags);
@@ -309,7 +384,13 @@ function _pmp_create_doc($type, $data) {
 }
 
 function _pmp_modify_doc($data) {
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		return false;
+	}
+
 	$doc = $sdk->fetchDoc($data->attributes->guid);
 
 	if (!empty($data->attributes->tags))
@@ -321,8 +402,22 @@ function _pmp_modify_doc($data) {
 	return $doc;
 }
 
+/**
+ * Create a post from a PMP API story
+ *
+ * @param bool $is_draft Whether the created post should be a draft or not.
+ * @return Array An array of data that will be JSON encoded.
+ */
 function _pmp_ajax_create_post($is_draft=false) {
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		return array(
+			"message" => "Plugin must be configured before performing this query.",
+			"success" => false
+		);
+	}
 
 	// make sure we don't search for a blank string
 	$guid = empty($_POST['pmp_guid']) ? 'nothing' : $_POST['pmp_guid'];
@@ -361,6 +456,7 @@ function _pmp_ajax_create_post($is_draft=false) {
  * @param $type (string) The document option to create a select menu for
  * (i.e., 'group', 'property' or 'series').
  * @since 0.3
+ * @return Array The data structure.
  */
 function _pmp_select_for_post($post, $type) {
 	$ret = array(
@@ -368,7 +464,13 @@ function _pmp_select_for_post($post, $type) {
 		'type' => $type
 	);
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		return array();
+	}
+
 	$pmp_things = $sdk->query2json('queryDocs', array(
 		'profile' => $type,
 		'writeable' => 'true',

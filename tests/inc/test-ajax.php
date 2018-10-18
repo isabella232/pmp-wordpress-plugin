@@ -10,7 +10,7 @@ class TestAjax extends WP_Ajax_UnitTestCase {
 			$this->skip = true;
 		else {
 			$this->skip = false;
-			$this->sdk_wrapper = new SDKWrapper();
+			$this->sdk_wrapper = new SDKWrapper( $settings );
 
 			// A test query that's all but guaranteed to return at least one result.
 			$this->query = array(

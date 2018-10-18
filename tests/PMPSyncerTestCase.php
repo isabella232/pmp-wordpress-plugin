@@ -28,7 +28,7 @@ abstract class PMP_SyncerTestCase extends WP_UnitTestCase {
       self::$_sdk_wrapper = false;
     }
     else {
-      self::$_sdk_wrapper = new SDKWrapper();
+      self::$_sdk_wrapper = new SDKWrapper( $settings );
       self::$_pmp_story = self::$_sdk_wrapper->fetchDoc(self::$_pmp_story_guid);
     }
   }

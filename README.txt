@@ -36,6 +36,8 @@ Built by the [INN Nerds](http://nerds.inn.org/).
 
 == Installation ==
 
+Installation through WordPress.org's plugin repository:
+
 1. Register for your PMP account at https://support.pmp.io/register
 2. Install the Public Media Platform plugin via the Wordpress.org plugin directory
 3. Activate the plugin
@@ -43,7 +45,9 @@ Built by the [INN Nerds](http://nerds.inn.org/).
 5. Enter your PMP Credentials
 6. Away you go!
 
-For more information on plugin setup and usage, see the [PMP-Wordpress Github project](https://github.com/publicmediaplatform/pmp-wordpress#pmp-wordpress).
+For manual installation instructions, see [these instructions on manual installation](https://github.com/npr/pmp-wordpress-plugin/blob/master/docs/installation-development.md).
+
+For more information on plugin setup and usage, see the [PMP-Wordpress Github project](https://github.com/npr/pmp-wordpress-plugin#pmp-wordpress-plugin).
 
 For information on the PMP in general, head to [support.pmp.io](https://support.pmp.io).
 

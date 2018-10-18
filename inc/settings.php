@@ -35,10 +35,19 @@ add_action( 'admin_init', 'pmp_admin_init' );
 function pmp_use_api_notifications_input() {
 	$options = get_option( 'pmp_settings' );
 	$setting = ( isset( $options['pmp_use_api_notifications'] ) ) ? $options['pmp_use_api_notifications'] : false;
+
+	if ( pmp_are_settings_valid( $options ) ) {
+		$disabled = ' ';
+	} else {
+		$disabled = ' disabled ';
+	}
+
 	?>
 		<input id="pmp_use_api_notifications" type="checkbox"
 			name="pmp_settings[pmp_use_api_notifications]"
-			<?php echo checked( $setting, 'on' ); ?>>Enable</input>
+			<?php echo checked( $setting, 'on' ); ?>
+			<?php echo $disabled; ?>
+			>Enable</input>
 		<p><em>Enabling this option allows the PMP API to push to your site as new story, audio, image, etc. updates become available.<em></p>
 		<p><em>This may help improve performance of your site, especially if you have a large number of imported posts.</em></p>
 <?php
@@ -123,14 +132,15 @@ function pmp_client_secret_input() {
  * Static field for currently connected user
  *
  * @since 0.3
+ * @uses pmp_are_settings_valid
  */
 function pmp_user_title_input() {
 	$options = get_option( 'pmp_settings' );
-	if ( empty( $options['pmp_api_url'] ) || empty( $options['pmp_client_id'] ) || empty( $options['pmp_client_secret'] ) ) {
+	if ( ! pmp_are_settings_valid( $options ) ) {
 		echo '<p><em>Not connected</em></p>';
 	} else {
 		try {
-			$sdk = new SDKWrapper();
+			$sdk = new SDKWrapper( $options );
 			$me = $sdk->fetchUser( 'me' );
 			$title = $me->attributes->title;
 			$link = pmp_get_support_link( $me->attributes->guid );
@@ -279,17 +289,21 @@ function pmp_settings_validate( $input ) {
 		unset( $input['pmp_use_api_notifications'] );
 	}
 
+	// If enabling the API notifications anew, subscribe to the notificatons API
 	if ( ! empty( $input['pmp_use_api_notifications'] ) && ! isset( $options['pmp_use_api_notifications'] ) ) {
 		foreach ( pmp_get_topic_urls() as $topic_url ) {
-			$result = pmp_send_subscription_request( 'subscribe', $topic_url );
+			// use the new options to subscribe to the Notifications API
+			$result = pmp_send_subscription_request( 'subscribe', $topic_url, $input );
 			if ( true !== $result ) {
 				add_settings_error( 'pmp_settings_fields', 'pmp_notifications_subscribe_error', $result, 'error' );
 				$errors = true;
 			}
 		}
+	// If disabling the API notifications, unsubscribe from the notifications API
 	} elseif ( empty( $input['pmp_use_api_notifications'] ) && isset( $options['pmp_use_api_notifications'] ) ) {
 		foreach ( pmp_get_topic_urls() as $topic_url ) {
-			$result = pmp_send_subscription_request( 'unsubscribe', $topic_url );
+			// use the old options to unsubscribe from the Notifications API
+			$result = pmp_send_subscription_request( 'unsubscribe', $topic_url, $options );
 			if ( true !== $result ) {
 				add_settings_error( 'pmp_settings_fields', 'pmp_notifications_unsubscribe_error', $result, 'error' );
 				$errors = true;
@@ -298,8 +312,37 @@ function pmp_settings_validate( $input ) {
 	}
 
 	if ( empty( $errors ) ) {
-		pmp_update_my_guid_transient();
+		pmp_update_my_guid_transient( $input );
 	}
 
 	return $input;
+}
+
+/**
+ * Check whether a given settings array is valid for the purposes of initializing the SDK
+ *
+ * This is a subset of pmp_settings_validate()
+ *
+ * @param Array $settings The settings to be checked
+ * @return Boolean Whether or not the settings is valid.
+ * @since 0.2.12
+ * @link https://github.com/npr/pmp-wordpress-plugin/issues/151
+ */
+function pmp_are_settings_valid( $settings_array ) {
+	// If things are not set, false.
+	if (
+		empty( $settings_array )
+		|| ! isset( $settings_array['pmp_api_url'] )
+		|| ! isset( $settings_array['pmp_client_id'] )
+		|| ! isset( $settings_array['pmp_client_secret'] )
+	) {
+		return false;
+	}
+
+	// If the API URL is not a valid URL, false.
+	if ( ! empty( $settings_array['pmp_api_url'] ) && false === filter_var( $settings_array['pmp_api_url'], FILTER_VALIDATE_URL ) ) {
+		return false;
+	}
+
+	return true;
 }

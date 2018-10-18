@@ -54,7 +54,11 @@ function pmp_manage_saved_searches_page() {
 		'searches' => pmp_get_saved_search_queries()
 	);
 
-	pmp_render_template('saved_searches.php', $context);
+	if ( pmp_verify_settings() ) {
+		pmp_render_template('saved_searches.php', $context);
+	} else {
+		pmp_render_template( 'unconfigured.php', array( 'title' => 'Search the Platform' ) );
+	}
 }
 
 /**
@@ -69,7 +73,17 @@ function pmp_groups_page() {
 	if (isset($_POST['pmp-unset-default-group']))
 		delete_option('pmp_default_group');
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		pmp_debug( 'Settings array from options table is not valid for initializing the SDK; aborting.' );
+
+		pmp_render_template( 'unconfigured.php', array( 'title' => 'PMP Groups &amp; Permissions' ) );
+
+		return false;
+	}
+
 	$pmp_users = $sdk->query2json('queryDocs', array(
 		'profile' => 'user',
 		'limit' => 9999
@@ -111,7 +125,17 @@ function pmp_collections_page() {
 	if (isset($_POST['pmp-unset-default-' . $profile]))
 		delete_option('pmp_default_' . $profile);
 
-	$sdk = new SDKWrapper();
+	$options = get_option( 'pmp_settings' );
+	if ( pmp_are_settings_valid( $options ) ) {
+		$sdk = new SDKWrapper( $options );
+	} else {
+		pmp_debug( 'Settings array from options table is not valid for initializing the SDK; aborting.' );
+
+		pmp_render_template( 'unconfigured.php', array( 'title' => 'PMP ' . $name ) );
+
+		return false;
+	}
+
 	$pmp_collection = $sdk->query2json('queryDocs', array(
 		'profile' => $profile,
 		'writeable' => 'true',

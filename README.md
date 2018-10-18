@@ -1,11 +1,11 @@
 # PMP WordPress Plugin
 
-[![Build Status](https://travis-ci.org/publicmediaplatform/pmp-wordpress.svg?branch=master)](https://travis-ci.org/publicmediaplatform/pmp-wordpress)
-[![Latest Release](https://img.shields.io/github/release/publicmediaplatform/pmp-wordpress.svg)](https://github.com/publicmediaplatform/pmp-wordpress/releases/latest)
+[![Build Status](https://travis-ci.org/npr/pmp-wordpress.svg?branch=master)](https://travis-ci.org/npr/pmp-wordpress)
+[![Latest Release](https://img.shields.io/github/release/npr/pmp-wordpress.svg)](https://github.com/npr/pmp-wordpress/releases/latest)
 
 Use this plugin to integrate the [Public Media Platform](http://publicmediaplatform.org/) with WordPress. Integration includes pulling stories and other content from the PMP into WordPress drafts and posts, and pushing WordPress posts into the PMP. Define simple or advanced searches for PMP content and save custom searches for reuse, with or without autopublishing on your WordPress site. Create PMP Groups, Properties, and Series from the plugin and push them to the PMP. Use of this plugin requires that you [register for a PMP account to get API keys](https://support.pmp.io/register).
 
-Also see this project in the [official Wordpress plugin directory](https://wordpress.org/plugins/public-media-platform/).
+Download this project from the [official Wordpress plugin directory](https://wordpress.org/plugins/public-media-platform/).
 
 Built by the [INN Nerds](http://nerds.inn.org/).
 

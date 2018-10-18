@@ -69,12 +69,19 @@ add_action('template_redirect', 'pmp_notifications_template_redirect');
  * When a user enables/disables PMP notifications service, send a subscription
  * request to the PMP notifications server.
  *
- * @param $mode string either 'subscribe' or 'unsubscribe'
+ * Because pmp_post_subscription_data() draws its settings direct from
+ * the options table, this funciton can only be used when options have
+ * been saved to the options table.
+ *
+ * @param String $mode either 'subscribe' or 'unsubscribe'
+ * @pram String $topic_url That which to subscribe to
+ * @param Array $settings (optional) The settings array to be passed to pmp_are_settings_valid
  * @return boolean|string true on success, or a string error message
  * @since 0.3
+ * @uses pmp_post_subscription_data
  */
-function pmp_send_subscription_request($mode='subscribe', $topic_url) {
-	$ret = pmp_post_subscription_data($mode, $topic_url);
+function pmp_send_subscription_request( $mode='subscribe', $topic_url, $settings = array() ) {
+	$ret = pmp_post_subscription_data( $mode, $topic_url, $settings );
 
 	if ( is_wp_error( $ret ) ) {
 		$return = array();
@@ -100,19 +107,27 @@ function pmp_send_subscription_request($mode='subscribe', $topic_url) {
 /**
  * Handle sending the actual subscription data to the hub
  *
- * @since 0.3
+ * This uses Pmp\Sdk directly, without using SDKWrapper.
+ * It also draws options directly from the database.
+ *
+ * This function should only be run when settings are saved in the database.
+ *
+ * @since 0.2.10
+ * @uses pmp_are_settings_valid
+ * @param String $mode 'subscribe' or 'unsubscribe'
+ * @param String $topic_url The topic to receive subscription notifications for
+ * @param Array $settings (optional) The settings array to be passed to pmp_are_settings_valid
+ * @return WP_Error|Array a WP_Error if the settings aren't right; or the results of a wp_remote_get call: Array or WP_Error.
  */
-function pmp_post_subscription_data($mode, $topic_url) {
-	$settings = get_option('pmp_settings');
+function pmp_post_subscription_data( $mode, $topic_url, $settings = array() ) {
+	if ( empty( $settings ) ) {
+		$settings = get_option('pmp_settings');
+	}
 	$trimmed = rtrim($settings['pmp_api_url'], '/');
 	$hub_url =  $trimmed . '/' . PMP_NOTIFICATIONS_HUB;
 	$hub_post_url = str_replace('api', 'publish', $trimmed) . '/' . PMP_NOTIFICATIONS_HUB;
 
-	if (
-		! isset( $settings['pmp_api_url'] )
-		|| ! isset( $settings['pmp_client_id'] )
-		|| ! isset( $settings['pmp_client_secret'] )
-	) {
+	if ( ! pmp_are_settings_valid( $settings ) ) {
 		return new WP_Error(
 			'pmp_sdk',
 			__( 'Unable to update subscription data: one or more of pmp_api_url, pmp_client_id, and pmp_client_secret were not set.', 'pmp' )
