@@ -1,5 +1,5 @@
 === Public Media Platform ===
-Contributors: publicmediaplatform, innlabs
+Contributors: publicmediaplatform, innlabs, nprds
 Tags: pmp,pubmedia,publicmediaplatform,apm,npr,pri,prx,pbs,media,news
 Requires at least: 4.1
 Tested up to: 4.9
